@@ -6,8 +6,11 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier . --write",
+    "prepare": "husky && husky install",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "^0.10.1",
@@ -34,5 +37,12 @@
   "ct3aMetadata": {
     "initVersion": "7.32.0"
   },
-  "packageManager": "npm@9.2.0"
+  "packageManager": "npm@9.2.0",
+  "lint-staged": {
+    "*.{ts,tsx,js}": [
+      "npm run lint",
+      "npm run format"
+    ],
+    "*.{json,html}": "npm run format"
+  }
 }
