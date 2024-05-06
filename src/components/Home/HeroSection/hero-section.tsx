@@ -16,7 +16,7 @@ export default function HeroSection() {
         <Button variant={'outline'}>Buy on Claimit</Button>
         <Button variant={'outline'}>Sell on Claimit</Button>
       </div>
-      <div className="mt-10 flex gap-8">
+      <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Button
           variant={'outline'}
           className="flex h-36 w-36 flex-col space-x-2"
