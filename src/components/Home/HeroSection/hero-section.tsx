@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 export default function HeroSection() {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+    <div className="flex h-screen w-full flex-1 flex-col items-center justify-center gap-4">
       <h1 className="text-center text-3xl">
         A marketplace where selling or buying old goods gets easier
       </h1>

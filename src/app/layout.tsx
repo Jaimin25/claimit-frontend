@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en" className={rubik.variable}>
       <body className={`grainy ${rubik.variable}`}>
         <Header />
-        <div className="mt-[56px] flex-1 px-8">{children}</div>
+        <div className="mt-[56px] flex-1">{children}</div>
         <Footer />
       </body>
     </html>
