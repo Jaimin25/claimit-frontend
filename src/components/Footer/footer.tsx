@@ -13,7 +13,7 @@ import { Button } from '../ui/button';
 
 export default function Footer() {
   return (
-    <div className="border-top-gray-200 flex flex-col gap-4 border px-20 pb-4 pt-8">
+    <footer className="border-top-gray-200 flex flex-col gap-4 border bg-white px-20 pb-4 pt-8">
       <div className="flex justify-between">
         <div className="flex flex-col justify-center gap-2">
           <div className="items-center justify-center">
@@ -62,6 +62,6 @@ export default function Footer() {
           © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
         </p>
       </div>
-    </div>
+    </footer>
   );
 }
