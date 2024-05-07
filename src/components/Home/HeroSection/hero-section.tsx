@@ -26,7 +26,7 @@ export default function HeroSection() {
           className="flex h-36 w-36 flex-col space-x-2"
         >
           <div className="flex gap-2">
-            <TrendingUp />
+            <TrendingUp className="stroke-emerald-500" />
             100
           </div>
           Trending auctions
@@ -36,7 +36,7 @@ export default function HeroSection() {
           className="flex h-36 w-36 flex-col space-x-2 p-10"
         >
           <div className="flex gap-2">
-            <MdOutlinePendingActions size={18} />
+            <MdOutlinePendingActions size={18} className="fill-orange-500" />
             100
           </div>
           Auctions ending
@@ -47,7 +47,7 @@ export default function HeroSection() {
           className="flex h-36 w-36 flex-col space-x-2"
         >
           <div className="flex gap-2">
-            <GiConfirmed size={18} />
+            <GiConfirmed size={18} className="fill-sky-500" />
             100
           </div>
           Auctions sold
@@ -57,7 +57,7 @@ export default function HeroSection() {
           className="flex h-36 w-36 flex-col space-x-2"
         >
           <div className="flex gap-2">
-            <FaUser />
+            <FaUser className="fill-violet-500" />
             100
           </div>
           Registered users
