@@ -19,7 +19,9 @@ export default function Header() {
         <Button variant={'link'}>Marketplace</Button>
         <Button variant={'link'}>Contact</Button>
         <Button variant={'link'}>FAQs</Button>
-        <Button variant={'outline'}>Sign In</Button>
+        <Link href={'/signin'}>
+          <Button variant={'outline'}>Sign In</Button>
+        </Link>
       </div>
     </nav>
   );

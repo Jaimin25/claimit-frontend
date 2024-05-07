@@ -13,10 +13,14 @@ export default function HeroSection() {
         A marketplace where selling or buying old goods gets easier
       </h1>
       <div className="space-x-3">
-        <Button variant={'outline'}>Buy on Claimit</Button>
-        <Button variant={'outline'}>Sell on Claimit</Button>
+        <Button variant={'outline'} className="w-36">
+          Buy on Claimit
+        </Button>
+        <Button variant={'outline'} className="w-36">
+          Sell on Claimit
+        </Button>
       </div>
-      <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
         <Button
           variant={'outline'}
           className="flex h-36 w-36 flex-col space-x-2"
