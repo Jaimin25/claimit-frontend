@@ -38,19 +38,19 @@ export default function AuctionCards() {
             <LuImageOff size={24} />
           </div>
           <div className="space-y-2">
-            <p className="text-xl font-semibold">Title</p>
-            <div className="flex items-center gap-1">
-              <FaGavel />
+            <p className="text-2xl font-semibold">Title</p>
+            <div className="flex items-center gap-2">
+              <FaGavel size={20} className="fill-emerald-500" />
               ₹1000
             </div>
-            <div className="flex items-center gap-1">
-              <HiUsers />
+            <div className="flex items-center gap-2">
+              <HiUsers size={20} className="fill-violet-500" />
               <p>10</p>
             </div>
-            <div className="flex items-center gap-1">
-              <FaClock />
+            <div className="flex items-center gap-2">
+              <FaClock size={20} className="fill-rose-500" />
               <p>
-                {days} Days {hours} hours {minutes} minutes {seconds} seconds
+                {days}d {hours}h {minutes}m {seconds}s
               </p>
             </div>
           </div>
