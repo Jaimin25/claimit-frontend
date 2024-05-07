@@ -27,7 +27,9 @@ export default function Header() {
       <div className="flex-1" />
       <div className="hidden lg:flex">
         <Button variant={'link'}>Marketplace</Button>
-        <Button variant={'link'}>Contact Us</Button>
+        <Link href={'/contact'}>
+          <Button variant={'link'}>Contact Us</Button>
+        </Link>
         <Button variant={'link'}>FAQs</Button>
         <Link href={'/signin'}>
           <Button variant={'outline'}>Sign In</Button>
@@ -39,10 +41,12 @@ export default function Header() {
             <MenubarTrigger className="border-none p-1 hover:cursor-pointer">
               <IoMenu size={24} />
             </MenubarTrigger>
-            <MenubarContent className="*:hover:cursor-pointer">
+            <MenubarContent>
               <MenubarItem>Sell</MenubarItem>
               <MenubarItem>Marketplace</MenubarItem>
-              <MenubarItem>Contact Us</MenubarItem>
+              <Link href="/contact">
+                <MenubarItem>Contact Us</MenubarItem>
+              </Link>
               <MenubarItem>FAQs</MenubarItem>
               <MenubarSeparator />
               <MenubarItem>
