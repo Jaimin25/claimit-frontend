@@ -18,7 +18,7 @@ export default function FeatureSection() {
   return (
     <div className="flex-1 space-y-6 bg-white p-8">
       <h3 className="text-3xl font-semibold">Trending Auctions</h3>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {isLoading
           ? new Array(6).fill(0).map((_, i) => <AuctionCardsSkeleton key={i} />)
           : new Array(6).fill(0).map((_, i) => <AuctionCards key={i} />)}
