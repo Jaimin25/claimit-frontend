@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 
 export default function HeroSection() {
   return (
-    <div className="flex h-screen w-full flex-1 flex-col items-center justify-center gap-4">
-      <h1 className="text-center text-3xl">
-        A marketplace where selling or buying old goods gets easier
+    <div className="my-4 flex h-screen w-full flex-1 flex-col items-center justify-center gap-4">
+      <h1 className="px-8 py-4 text-center text-4xl">
+        A marketplace where selling or buying items gets easier
       </h1>
       <div className="space-x-3">
         <Button variant={'outline'} className="w-36">
