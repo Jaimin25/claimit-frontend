@@ -4,6 +4,7 @@ import { FaGavel } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 import { LuImageOff } from 'react-icons/lu';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
@@ -37,6 +38,13 @@ export default function AuctionCards() {
           <div className="w-30 flex h-48 items-center justify-center bg-gray-200">
             <LuImageOff size={24} />
           </div>
+          <div className="flex gap-2">
+            <Avatar className="h-6 w-6">
+              <AvatarImage src="https://github.com/jaimin25.png" />
+              <AvatarFallback>CJ</AvatarFallback>
+            </Avatar>
+            <p>User Name</p>
+          </div>
           <div className="space-y-2">
             <p className="text-2xl font-semibold">Title</p>
             <div className="flex items-center gap-2">
@@ -48,7 +56,7 @@ export default function AuctionCards() {
               <p>10</p>
             </div>
             <div className="flex items-center gap-2">
-              <FaClock size={20} className="fill-orange-500" />
+              <FaClock size={20} className="fill-blue-500" />
               <p>
                 {days}d {hours}h {minutes}m {seconds}s
               </p>

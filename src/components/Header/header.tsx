@@ -17,7 +17,7 @@ import { APP_NAME } from '@/lib/config';
 
 export default function Header() {
   return (
-    <nav className="fixed top-0 flex h-[48px] w-full items-center border border-b-gray-200 bg-white px-4 py-7 md:px-8">
+    <nav className="fixed top-0 z-50 flex h-[48px] w-full items-center border border-b-gray-200 bg-white px-4 py-7 md:px-8">
       <Link href={'/'}>
         <div className="flex items-center gap-1">
           <RiAuctionLine size={28} />
