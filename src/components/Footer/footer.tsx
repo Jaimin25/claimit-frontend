@@ -49,7 +49,7 @@ export default function Footer() {
               Privacy Policy
             </Link>
             <Link href={'*'} className="hover:underline">
-              Contact
+              Contact Us
             </Link>
             <Link href={'*'} className="hover:underline">
               About Us
