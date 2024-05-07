@@ -48,7 +48,7 @@ export default function AuctionCards() {
               <p>10</p>
             </div>
             <div className="flex items-center gap-2">
-              <FaClock size={20} className="fill-rose-500" />
+              <FaClock size={20} className="fill-orange-500" />
               <p>
                 {days}d {hours}h {minutes}m {seconds}s
               </p>
