@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaClock } from 'react-icons/fa';
+import { FaClock, FaWallet } from 'react-icons/fa';
 import { FaGavel } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 import { LuImageOff } from 'react-icons/lu';
@@ -49,7 +49,11 @@ export default function AuctionCards() {
             <p className="text-2xl font-semibold">Title</p>
             <div className="flex items-center gap-2">
               <FaGavel size={20} className="fill-emerald-500" />
-              ₹1000
+              ₹1000 (Bid price)
+            </div>
+            <div className="flex items-center gap-2">
+              <FaWallet size={20} className="fill-amber-500" />
+              ₹2000 (Buy price)
             </div>
             <div className="flex items-center gap-2">
               <HiUsers size={20} className="fill-violet-500" />
@@ -69,7 +73,7 @@ export default function AuctionCards() {
           Bid
         </Button>
         <Button variant={'outline'} className="w-full">
-          Buy (₹2000)
+          Buy
         </Button>
       </CardFooter>
     </Card>
