@@ -15,8 +15,8 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 
 export default function MyBids() {
   return (
-    <div>
-      <Card>
+    <div className="h-full w-full">
+      <Card className="h-full">
         <CardHeader>
           <h3 className="text-3xl font-semibold">Your Bids</h3>
         </CardHeader>
