@@ -50,7 +50,7 @@ const identityProofFormSchema = z.object({
           .refine((files) => files?.length == 1, 'File is required.')
           .refine(
             (files) =>
-              files.legnth == 1
+              files.length == 1
                 ? ['application/pdf'].includes(files?.[0]!.type)
                   ? true
                   : false
