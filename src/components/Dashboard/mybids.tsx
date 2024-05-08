@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaSearch } from 'react-icons/fa';
 
 import {
   Table,
@@ -12,6 +13,7 @@ import {
 
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader } from '../ui/card';
+import { Input } from '../ui/input';
 
 export default function MyBids() {
   return (
@@ -20,7 +22,11 @@ export default function MyBids() {
         <CardHeader>
           <h3 className="text-3xl font-semibold">Your Bids</h3>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-2">
+            <FaSearch />
+            <Input placeholder="Search auctions..." />
+          </div>
           <Table>
             <TableCaption>A list of your bids.</TableCaption>
             <TableHeader>

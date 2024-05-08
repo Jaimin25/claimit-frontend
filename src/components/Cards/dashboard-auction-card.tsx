@@ -34,16 +34,18 @@ export default function DashboardAuctionCard() {
   return (
     <div>
       <Card>
-        <div className="flex">
-          <div className="flex w-36 items-center justify-center bg-gray-200">
-            <LuImageOff size={24} />
+        <div className="flex flex-col md:flex-row">
+          <div>
+            <div className="flex h-36 w-full items-center justify-center bg-gray-200 md:h-full md:w-36">
+              <LuImageOff size={24} />
+            </div>
           </div>
           <div>
             <CardHeader>
               <p className="text-2xl font-semibold">Title</p>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4 lg:grid-cols-2">
                 <div className="flex items-center gap-2">
                   <FaGavel size={20} className="fill-emerald-500" />
                   ₹1000 (Bid price)
