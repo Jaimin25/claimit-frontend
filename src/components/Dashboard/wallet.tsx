@@ -34,7 +34,12 @@ const identityProofFormSchema = z.object({
           .instanceof(FileList)
           .refine((files) => files?.length == 1, 'Image is required.')
           .refine(
-            (files) => ['application/pdf'].includes(files?.[0]!.type),
+            (files) =>
+              files?.length == 1
+                ? ['application/pdf'].includes(files?.[0]!.type)
+                  ? true
+                  : false
+                : true,
             '.pdf files are accepted.'
           ),
   panPdf:
@@ -42,9 +47,14 @@ const identityProofFormSchema = z.object({
       ? z.any()
       : z
           .instanceof(FileList)
-          .refine((files) => files?.length == 1, 'Image is required.')
+          .refine((files) => files?.length == 1, 'File is required.')
           .refine(
-            (files) => ['application/pdf'].includes(files?.[0]!.type),
+            (files) =>
+              files.legnth == 1
+                ? ['application/pdf'].includes(files?.[0]!.type)
+                  ? true
+                  : false
+                : true,
             '.pdf files are accepted.'
           ),
 });
