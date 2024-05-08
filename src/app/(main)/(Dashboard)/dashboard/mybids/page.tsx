@@ -1,5 +1,11 @@
 import React from 'react';
 
+import MyBids from '@/components/Dashboard/mybids';
+
 export default function MyBidsPage() {
-  return <div>MyBidsPage</div>;
+  return (
+    <div className="account-details-container h-full">
+      <MyBids />
+    </div>
+  );
 }

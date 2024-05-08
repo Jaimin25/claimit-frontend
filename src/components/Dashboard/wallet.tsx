@@ -56,7 +56,7 @@ export default function Wallet() {
     <div className="h-full w-full">
       <Card className="w-full">
         <CardHeader>
-          <h3 className="text-3xl">Wallet</h3>
+          <h3 className="text-3xl font-semibold">Wallet</h3>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
