@@ -20,23 +20,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from '../ui/textarea';
 
 const contactFormSchema = z.object({
-  fullname: z.string().trim().min(1, { message: 'Please fill this field' }),
-  email: z
-    .string()
-    .trim()
-    .min(1, { message: 'Please fill this field' })
-    .email(),
-  subject: z
-    .string()
-    .trim()
-    .min(1, { message: 'Please fill this field' })
-    .max(50),
-  message: z.string().trim().min(1, { message: 'Please fill this field' }),
+  fullname: z.string({ required_error: 'Please fill this field' }),
+  email: z.string({ required_error: 'Please fill this field' }).email(),
+  subject: z.string({ required_error: 'Please fill this field' }).max(50),
+  message: z.string({ required_error: 'Please fill this field' }),
 });
+
 export default function ContactForm() {
   const contactForm = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
-    defaultValues: { fullname: '', email: '', subject: '', message: '' },
   });
 
   const onSubmit = (values: z.infer<typeof contactFormSchema>) => {

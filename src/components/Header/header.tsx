@@ -49,12 +49,14 @@ export default function Header() {
               </Link>
               <MenubarItem>FAQs</MenubarItem>
               <MenubarSeparator />
-              <MenubarItem>
-                <div className="flex items-center gap-2">
-                  <FiLogOut />
-                  Logout / Sign In
-                </div>
-              </MenubarItem>
+              <Link href={'/signin'}>
+                <MenubarItem>
+                  <div className="flex items-center gap-2">
+                    <FiLogOut />
+                    Logout / Sign In
+                  </div>
+                </MenubarItem>
+              </Link>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
