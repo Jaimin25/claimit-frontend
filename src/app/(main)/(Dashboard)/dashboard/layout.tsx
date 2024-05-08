@@ -30,42 +30,30 @@ export default function RootLayout({
               Navigation <FaChevronDown className="mx-2" />
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>
-                <Link
-                  href={'/dashboard/accountdetails'}
-                  className="flex items-center gap-2"
-                >
+              <Link href={'/dashboard/accountdetails'}>
+                <MenubarItem className="flex items-center gap-2">
                   <MdAccountCircle size={24} />
                   Account Details
-                </Link>
-              </MenubarItem>
-              <MenubarItem>
-                <Link
-                  href={'/dashboard/wallet'}
-                  className="flex items-center gap-2"
-                >
+                </MenubarItem>
+              </Link>
+              <Link href={'/dashboard/wallet'}>
+                <MenubarItem className="flex items-center gap-2">
                   <MdAccountBalanceWallet size={24} />
                   Wallet
-                </Link>
-              </MenubarItem>
-              <MenubarItem>
-                <Link
-                  href={'/dashboard/myauctions'}
-                  className="flex items-center gap-2"
-                >
+                </MenubarItem>
+              </Link>
+              <Link href={'/dashboard/myauctions'}>
+                <MenubarItem className="flex items-center gap-2">
                   <RiAuctionFill size={24} />
                   My Auctions
-                </Link>
-              </MenubarItem>
-              <MenubarItem>
-                <Link
-                  href={'/dashboard/mybids'}
-                  className="flex items-center gap-2"
-                >
+                </MenubarItem>
+              </Link>
+              <Link href={'/dashboard/mybids'}>
+                <MenubarItem className="flex items-center gap-2">
                   <IoMdList size={24} />
                   My Bids
-                </Link>
-              </MenubarItem>
+                </MenubarItem>
+              </Link>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
