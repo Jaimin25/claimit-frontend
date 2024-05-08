@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
 import { CommandList } from 'cmdk';
 import { useForm } from 'react-hook-form';
@@ -8,6 +9,7 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Command,
   CommandEmpty,
@@ -29,10 +31,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import { Textarea } from '../ui/textarea';
 
 const countries = [
   { label: 'India', value: 'india' },
@@ -55,6 +56,8 @@ const signUpFormSchema = z.object({
 });
 
 export default function SignUpForm() {
+  const [isChecked, setIsChecked] = useState(false);
+
   const signUpForm = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
   });
@@ -307,8 +310,25 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+              <div className="items-top flex space-x-2">
+                <Checkbox
+                  id="terms1"
+                  onCheckedChange={() => setIsChecked(!isChecked)}
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="terms1"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Accept terms and conditions
+                  </label>
+                  <p className="text-muted-foreground text-sm">
+                    You agree to our Terms of Service and Privacy Policy.
+                  </p>
+                </div>
+              </div>
               <div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={!isChecked}>
                   Register
                 </Button>
               </div>
