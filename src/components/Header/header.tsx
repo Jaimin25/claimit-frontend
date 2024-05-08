@@ -26,7 +26,9 @@ export default function Header() {
       </Link>
       <div className="flex-1" />
       <div className="hidden lg:flex">
-        <Button variant={'link'}>Marketplace</Button>
+        <Link href={'/marketplace'}>
+          <Button variant={'link'}>Marketplace</Button>
+        </Link>
         <Link href={'/contact'}>
           <Button variant={'link'}>Contact Us</Button>
         </Link>
@@ -43,7 +45,9 @@ export default function Header() {
             </MenubarTrigger>
             <MenubarContent>
               <MenubarItem>Sell</MenubarItem>
-              <MenubarItem>Marketplace</MenubarItem>
+              <MenubarItem>
+                <Link href={'/marketplace'}>Marketplace</Link>
+              </MenubarItem>
               <Link href="/contact">
                 <MenubarItem>Contact Us</MenubarItem>
               </Link>
