@@ -1,9 +1,18 @@
 import React from 'react';
 
+import AuctionOwnerSectionSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-owner-section-skele';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-export default function AuctionOwnerSection() {
+export default function AuctionOwnerSection({
+  isLoading,
+}: {
+  isLoading: boolean;
+}) {
+  if (isLoading) {
+    return <AuctionOwnerSectionSkele />;
+  }
+
   return (
     <div className="w-full lg:max-w-xs">
       <Card>

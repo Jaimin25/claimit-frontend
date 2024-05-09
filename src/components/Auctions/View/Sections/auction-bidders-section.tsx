@@ -1,10 +1,19 @@
 import React from 'react';
 
+import AuctionBidderSectionSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-bidders-section-skele';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-export default function AuctionBiddersSection() {
+export default function AuctionBiddersSection({
+  isLoading,
+}: {
+  isLoading: boolean;
+}) {
+  if (isLoading) {
+    return <AuctionBidderSectionSkele />;
+  }
+
   return (
     <div>
       <Card>

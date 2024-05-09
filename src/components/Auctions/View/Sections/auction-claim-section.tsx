@@ -4,10 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { FaClock } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 
+import AuctionClaimSkeletonSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-claim-section-skele';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-export default function AuctionClaimSection() {
+export default function AuctionClaimSection({
+  isLoading,
+}: {
+  isLoading: boolean;
+}) {
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -29,6 +34,10 @@ export default function AuctionClaimSection() {
 
     return () => clearInterval(interval);
   }, []);
+
+  if (isLoading) {
+    return <AuctionClaimSkeletonSkele />;
+  }
 
   return (
     <div className="w-full">

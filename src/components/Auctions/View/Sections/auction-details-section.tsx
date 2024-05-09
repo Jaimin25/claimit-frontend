@@ -1,8 +1,17 @@
 import React from 'react';
 
+import AuctionDetailsSectionSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-details-section-skele';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-export default function AuctionDetailsSection() {
+export default function AuctionDetailsSection({
+  isLoading,
+}: {
+  isLoading: boolean;
+}) {
+  if (isLoading) {
+    return <AuctionDetailsSectionSkele />;
+  }
+
   return (
     <div className="w-full">
       <Card>
