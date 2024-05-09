@@ -44,7 +44,7 @@ const signUpFormSchema = z.object({
   username: z.string({ required_error: 'Please fill this field' }),
   firstname: z.string({ required_error: 'Please fill this field' }),
   lastname: z.string({ required_error: 'Please fill this field' }),
-  email: z.string().email(),
+  email: z.string({ required_error: 'Please fill this field' }).email(),
   phone: z.coerce.number().optional(),
   password: z.string().trim().min(6),
   cpassword: z.string().trim().min(6),

@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaEdit } from 'react-icons/fa';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import { z } from 'zod';
 
@@ -77,7 +77,7 @@ const accountDetailsFormSchema = z.object({
           ),
   firstname: z.string({ required_error: 'Please fill this field' }),
   lastname: z.string({ required_error: 'Please fill this field' }),
-  email: z.string().email(),
+  email: z.string({ required_error: 'Please fill this field' }).email(),
   phone: z.coerce.number().optional(),
   streetaddress: z.string({ required_error: 'Please fill this field' }),
   city: z.string({ required_error: 'Please fill this field' }),
@@ -124,11 +124,19 @@ export default function AccountDetails() {
                             <AvatarImage src={preview} />
                             <AvatarFallback>IMG</AvatarFallback>
                           </Avatar>
-                          <div>
+                          <div className="flex items-center">
+                            <label
+                              htmlFor="profilePic"
+                              className="rounded-md border border-gray-300 p-3 transition hover:cursor-pointer hover:bg-gray-100"
+                            >
+                              <FaEdit />
+                            </label>
                             <Input
                               type="file"
                               {...fileRef}
                               accept="image/*"
+                              className="hidden"
+                              id="profilePic"
                               onChange={(e) => {
                                 setPreview(
                                   URL.createObjectURL(
