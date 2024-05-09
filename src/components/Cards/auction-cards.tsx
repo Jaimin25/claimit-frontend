@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { FaClock, FaWallet } from 'react-icons/fa';
 import { FaGavel } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
@@ -69,12 +70,16 @@ export default function AuctionCards() {
         </div>
       </CardContent>
       <CardFooter className="w-full space-x-4">
-        <Button variant={'outline'} className="w-full">
-          Bid
-        </Button>
-        <Button variant={'outline'} className="w-full">
-          Buy
-        </Button>
+        <Link href={`/auctions/view/id-2414`} className="w-full">
+          <Button variant={'outline'} className="w-full">
+            Bid
+          </Button>
+        </Link>
+        <Link href={`/auctions/view/id-2414`} className="w-full">
+          <Button variant={'outline'} className="w-full">
+            Buy
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
