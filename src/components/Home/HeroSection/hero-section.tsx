@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { TrendingUp } from 'lucide-react';
 import { FaUser } from 'react-icons/fa';
 import { GiConfirmed } from 'react-icons/gi';
@@ -13,9 +14,11 @@ export default function HeroSection() {
         A marketplace where selling or buying items gets easier
       </h1>
       <div className="space-x-3">
-        <Button variant={'outline'} className="w-36">
-          Buy on Claimit
-        </Button>
+        <Link href={'/marketplace'}>
+          <Button variant={'outline'} className="w-36">
+            Buy on Claimit
+          </Button>
+        </Link>
         <Button variant={'outline'} className="w-36">
           Sell on Claimit
         </Button>

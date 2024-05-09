@@ -45,9 +45,9 @@ export default function Header() {
             </MenubarTrigger>
             <MenubarContent>
               <MenubarItem>Sell</MenubarItem>
-              <MenubarItem>
-                <Link href={'/marketplace'}>Marketplace</Link>
-              </MenubarItem>
+              <Link href={'/marketplace'}>
+                <MenubarItem>Marketplace</MenubarItem>
+              </Link>
               <Link href="/contact">
                 <MenubarItem>Contact Us</MenubarItem>
               </Link>
