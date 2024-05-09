@@ -19,22 +19,22 @@ export default function AuctionCardsSkeleton() {
             <Skeleton className="w-1/2" />
           </div>
           <div className="space-y-2">
-            <Skeleton className="h-6 w-2/3" />
+            <Skeleton className="h-6 w-3/4" />
             <div className="flex items-center gap-2">
               <FaGavel size={20} className="fill-emerald-500" />
-              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-6 w-2/5" />
             </div>
             <div className="flex items-center gap-2">
               <FaWallet size={20} className="fill-amber-500" />
-              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-6 w-2/5" />
             </div>
             <div className="flex items-center gap-2">
               <HiUsers size={20} className="fill-violet-500" />
-              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-6 w-2/5" />
             </div>
             <div className="flex items-center gap-2">
               <FaClock size={20} className="fill-blue-500" />
-              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-6 w-2/5" />
             </div>
           </div>
         </div>
