@@ -9,14 +9,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center lg:flex-row">
-      <div className="sidebar-container hidden h-full w-1/6 border-r border-gray-200 bg-white p-6 lg:block">
+    <div className="flex w-full flex-col gap-6 p-6 lg:flex-row">
+      <div className="sidebar-container sticky top-20 hidden h-1/2 w-1/6 lg:block">
         <Sidebar />
       </div>
       <div className="block w-full p-6 lg:hidden">
         <MobileNav />
       </div>
-      <div className="children-container h-full w-full p-6 lg:w-5/6">
+      <div className="children-container h-full w-full lg:w-5/6">
         {children}
       </div>
     </div>

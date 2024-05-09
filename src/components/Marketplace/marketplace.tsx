@@ -1,14 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
 
 import AuctionCards from '@/components/Cards/auction-cards';
 import AuctionCardsSkeleton from '@/components/Skeletons/auction-cards-skeleton';
 
-import { Input } from '../ui/input';
-
-export default function Marketpalce() {
+export default function Marketplace() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,11 +15,7 @@ export default function Marketpalce() {
   }, []);
 
   return (
-    <div className="flex-1 space-y-6 p-8">
-      <div className="flex items-center gap-2">
-        <FaSearch />
-        <Input placeholder="Search auctions..." />
-      </div>
+    <div className="flex-1 space-y-6">
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {isLoading
           ? new Array(6).fill(0).map((_, i) => <AuctionCardsSkeleton key={i} />)
