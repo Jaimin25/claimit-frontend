@@ -5,6 +5,18 @@
 await import('./src/env.js');
 
 /** @type {import("next").NextConfig} */
-const config = {};
-
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'geauction.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.shutterstock.com',
+      },
+    ],
+  },
+};
 export default config;
