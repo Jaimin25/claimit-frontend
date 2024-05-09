@@ -37,12 +37,12 @@ export default function AuctionImagesSection({
             <CarouselItem key={index}>
               <div className="p-1">
                 <Card className="w-full">
-                  <CardContent className="flex aspect-video items-center justify-center p-6">
+                  <CardContent className="flex aspect-square items-center justify-center p-6 md:aspect-video">
                     <Image
                       src={url}
                       width={250}
                       alt={url}
-                      className="h-full w-full hover:cursor-pointer"
+                      className="h-full w-full object-cover hover:cursor-pointer"
                       height={100}
                       onClick={() => {
                         setImgUrl(url);
