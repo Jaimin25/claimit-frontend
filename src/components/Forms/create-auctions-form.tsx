@@ -67,7 +67,7 @@ const createAuctionFormSchema = z.object({
       ? z.any()
       : z
           .instanceof(FileList)
-          .refine((files) => files?.length == 1, 'File is required.')
+          .refine((files) => files?.length == 1, 'Image is required.')
           .refine(
             (files) =>
               files?.length == 1
@@ -92,7 +92,7 @@ const createAuctionFormSchema = z.object({
       ? z.any()
       : z
           .instanceof(FileList)
-          .refine((files) => files?.length == 1, 'File is required.')
+          .refine((files) => files?.length == 1, 'Image is required.')
           .refine(
             (files) =>
               files?.length == 1
