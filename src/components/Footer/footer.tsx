@@ -50,7 +50,7 @@ export default function Footer() {
             <Link href={'/contact'} className="hover:underline">
               Contact Us
             </Link>
-            <Link href={'*'} className="hover:underline">
+            <Link href={'/aboutus'} className="hover:underline">
               About Us
             </Link>
           </div>
