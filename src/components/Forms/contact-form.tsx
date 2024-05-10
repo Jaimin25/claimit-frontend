@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -9,6 +8,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,10 +20,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from '../ui/textarea';
 
 const contactFormSchema = z.object({
-  fullname: z.string({ required_error: 'Please fill this field' }),
-  email: z.string({ required_error: 'Please fill this field' }).email(),
-  subject: z.string({ required_error: 'Please fill this field' }).max(50),
-  message: z.string({ required_error: 'Please fill this field' }),
+  fullname: z.string().trim().min(1, { message: 'Please fill this field' }),
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' })
+    .email(),
+  subject: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' })
+    .max(50),
+  message: z.string().trim().min(1, { message: 'Please fill this field' }),
 });
 
 export default function ContactForm() {
@@ -47,6 +55,7 @@ export default function ContactForm() {
               onSubmit={contactForm.handleSubmit(onSubmit)}
               className="space-y-8"
             >
+              {/* FULL NAME FIELD */}
               <FormField
                 control={contactForm.control}
                 name="fullname"
@@ -58,10 +67,13 @@ export default function ContactForm() {
                     <FormControl>
                       <Input placeholder="your fullname" {...field} />
                     </FormControl>
+                    <FormDescription>Provide your full name</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* EMAIL FIELD */}
               <FormField
                 control={contactForm.control}
                 name="email"
@@ -73,10 +85,16 @@ export default function ContactForm() {
                     <FormControl>
                       <Input type="email" placeholder="your email" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Provide a valid email, it will be required for later
+                      communications
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* SUBJECT FIELD */}
               <FormField
                 control={contactForm.control}
                 name="subject"
@@ -88,10 +106,15 @@ export default function ContactForm() {
                     <FormControl>
                       <Input placeholder="subject of your message" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Provide a proper subject describing the issue or topic
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* MESSAGE FIELD */}
               <FormField
                 control={contactForm.control}
                 name="message"
@@ -106,6 +129,9 @@ export default function ContactForm() {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      Provide all the required details
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
