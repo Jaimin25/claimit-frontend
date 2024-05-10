@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/menubar';
 import { APP_NAME } from '@/lib/config';
 
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+
 export default function Header() {
   return (
     <nav className="fixed top-0 z-50 flex h-[48px] w-full items-center border border-b-gray-200 bg-white px-4 py-7 md:px-8">
@@ -25,6 +27,9 @@ export default function Header() {
       </Link>
       <div className="flex-1" />
       <div className="hidden lg:flex">
+        <Link href={'/auctions/create'}>
+          <Button variant={'outline'}>Sell on claimit</Button>
+        </Link>
         <Link href={'/marketplace'}>
           <Button variant={'link'}>Marketplace</Button>
         </Link>
@@ -37,15 +42,39 @@ export default function Header() {
         <Link href={'/signin'}>
           <Button variant={'default'}>Sign In</Button>
         </Link>
+        <Menubar className="border-none">
+          <MenubarMenu>
+            <MenubarTrigger>
+              <Avatar>
+                <AvatarFallback>CJ</AvatarFallback>
+                <AvatarImage src={'https://github.com/jaimin25.png'} />
+              </Avatar>
+            </MenubarTrigger>
+            <MenubarContent>
+              <Link href={'/dashboard/accountdetails'}>
+                <MenubarItem>Dashboard</MenubarItem>
+              </Link>
+              <MenubarSeparator />
+              <MenubarItem>
+                <div className="flex items-center gap-2">
+                  <FiLogOut />
+                  Logout
+                </div>
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
       </div>
       <div className="flex lg:hidden">
         <Menubar className="border-none">
           <MenubarMenu>
-            <MenubarTrigger className="border-none p-1 hover:cursor-pointer">
+            <MenubarTrigger className="border-none p-3 hover:cursor-pointer">
               <IoMenu size={24} />
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>Sell</MenubarItem>
+              <Link href={'/auctions/create'}>
+                <MenubarItem>Sell</MenubarItem>
+              </Link>
               <Link href={'/marketplace'}>
                 <MenubarItem>Marketplace</MenubarItem>
               </Link>
@@ -54,6 +83,10 @@ export default function Header() {
               </Link>
               <Link href={'/faq'}>
                 <MenubarItem>FAQs</MenubarItem>
+              </Link>
+              <MenubarSeparator />
+              <Link href={'/dashboard/accountdetails'}>
+                <MenubarItem>Dashboard</MenubarItem>
               </Link>
               <MenubarSeparator />
               <Link href={'/signin'}>
