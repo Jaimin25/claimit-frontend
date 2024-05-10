@@ -856,7 +856,7 @@ export default function CreateAuctionForm() {
                   >
                     Accept terms and conditions
                   </label>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm text-muted-foreground">
                     You agree to our Terms of Service and Privacy Policy.
                   </p>
                 </div>
