@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import {
   RiAuctionLine,
@@ -42,7 +41,7 @@ export default function Footer() {
             <Link href={'/marketplace'} className="hover:underline">
               Buy Item
             </Link>
-            <Link href={'*'} className="hover:underline">
+            <Link href={'/auctions/create'} className="hover:underline">
               Sell Item
             </Link>
             <Link href={'*'} className="hover:underline">
