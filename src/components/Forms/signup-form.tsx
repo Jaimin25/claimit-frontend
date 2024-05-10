@@ -20,6 +20,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,17 +42,28 @@ const countries = [
 ] as const;
 
 const signUpFormSchema = z.object({
-  username: z.string({ required_error: 'Please fill this field' }),
-  firstname: z.string({ required_error: 'Please fill this field' }),
-  lastname: z.string({ required_error: 'Please fill this field' }),
-  email: z.string({ required_error: 'Please fill this field' }).email(),
+  username: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' })
+    .refine((s) => !s.includes(' '), 'Username should not have spaces'),
+  firstname: z.string().trim().min(1, { message: 'Please fill this field' }),
+  lastname: z.string().trim().min(1, { message: 'Please fill this field' }),
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' })
+    .email(),
   phone: z.coerce.number().optional(),
   password: z.string().trim().min(6),
   cpassword: z.string().trim().min(6),
-  streetaddress: z.string({ required_error: 'Please fill this field' }),
-  city: z.string({ required_error: 'Please fill this field' }),
-  state: z.string({ required_error: 'Please fill this field' }),
-  country: z.string({ required_error: 'Please fill this field' }),
+  streetaddress: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' }),
+  city: z.string().trim().min(1, { message: 'Please fill this field' }),
+  state: z.string().trim().min(1, { message: 'Please fill this field' }),
+  country: z.string().trim().min(1, { message: 'Please fill this field' }),
   zipcode: z.coerce.number({ required_error: 'Please fill this field' }),
 });
 
@@ -78,6 +90,7 @@ export default function SignUpForm() {
               onSubmit={signUpForm.handleSubmit(onSubmit)}
               className="space-y-8"
             >
+              {/* USERNAME FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="username"
@@ -89,10 +102,13 @@ export default function SignUpForm() {
                     <FormControl>
                       <Input placeholder="username" {...field} />
                     </FormControl>
+                    <FormDescription>Enter a proper username</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* FIRST NAME FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="firstname"
@@ -108,6 +124,8 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* LAST NAME FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="lastname"
@@ -123,6 +141,8 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* EMAIL FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="email"
@@ -134,10 +154,16 @@ export default function SignUpForm() {
                     <FormControl>
                       <Input placeholder="email" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Provide a valid email, it will be used to verify your
+                      account and send you notifications
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* PHONE NO. FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="phone"
@@ -147,6 +173,7 @@ export default function SignUpForm() {
                     <FormControl>
                       <Input
                         type="number"
+                        min={1}
                         placeholder="phone number"
                         {...field}
                       />
@@ -155,12 +182,16 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* PASSWORD FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>
+                      Password <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="******" {...field} />
                     </FormControl>
@@ -168,12 +199,16 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* CPASSWORD FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="cpassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>
+                      Confirm Password <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="******" {...field} />
                     </FormControl>
@@ -181,6 +216,8 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* STREET ADDRESS FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="streetaddress"
@@ -192,10 +229,15 @@ export default function SignUpForm() {
                     <FormControl>
                       <Textarea placeholder="address" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      This information will not be disclosed publicly
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* CITY FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="city"
@@ -211,6 +253,8 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* STATE FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="state"
@@ -226,6 +270,8 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* COUNTRY FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="country"
@@ -291,6 +337,8 @@ export default function SignUpForm() {
                   </FormItem>
                 )}
               />
+
+              {/* ZIPCODE FIELD */}
               <FormField
                 control={signUpForm.control}
                 name="zipcode"
@@ -302,6 +350,7 @@ export default function SignUpForm() {
                     <FormControl>
                       <Input
                         type="number"
+                        min={1}
                         placeholder="zip/post code"
                         {...field}
                       />

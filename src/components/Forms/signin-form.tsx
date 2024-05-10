@@ -50,6 +50,7 @@ export default function SignInForm() {
               onSubmit={signInForm.handleSubmit(onSubmit)}
               className="space-y-8"
             >
+              {/* EMAIL or PHONE FIELD */}
               <FormField
                 control={signInForm.control}
                 name="emailOrPhone"
@@ -67,6 +68,8 @@ export default function SignInForm() {
                   </FormItem>
                 )}
               />
+
+              {/* PASSWORD FIELD */}
               <FormField
                 control={signInForm.control}
                 name="password"
