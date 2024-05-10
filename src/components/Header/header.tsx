@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { FiLogOut } from 'react-icons/fi';
 import { IoMenu } from 'react-icons/io5';
@@ -32,7 +31,9 @@ export default function Header() {
         <Link href={'/contact'}>
           <Button variant={'link'}>Contact Us</Button>
         </Link>
-        <Button variant={'link'}>FAQs</Button>
+        <Link href={'/faq'}>
+          <Button variant={'link'}>FAQs</Button>
+        </Link>
         <Link href={'/signin'}>
           <Button variant={'outline'}>Sign In</Button>
         </Link>
@@ -51,7 +52,9 @@ export default function Header() {
               <Link href="/contact">
                 <MenubarItem>Contact Us</MenubarItem>
               </Link>
-              <MenubarItem>FAQs</MenubarItem>
+              <Link href={'/faq'}>
+                <MenubarItem>FAQs</MenubarItem>
+              </Link>
               <MenubarSeparator />
               <Link href={'/signin'}>
                 <MenubarItem>
