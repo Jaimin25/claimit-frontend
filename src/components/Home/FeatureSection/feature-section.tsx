@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 import AuctionCards from '@/components/Cards/auction-cards';
 import AuctionCardsSkeleton from '@/components/Skeletons/auction-cards-skeleton';
@@ -24,9 +25,11 @@ export default function FeatureSection() {
           : new Array(6).fill(0).map((_, i) => <AuctionCards key={i} />)}
       </div>
       <div className="flex w-full justify-center">
-        <Button variant={'link'} className="text-lg">
-          Explore More →
-        </Button>
+        <Link href={'/marketplace'}>
+          <Button variant={'link'} className="text-lg">
+            Explore More →
+          </Button>
+        </Link>
       </div>
     </div>
   );
