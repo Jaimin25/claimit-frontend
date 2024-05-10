@@ -18,6 +18,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,7 +50,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const accountDetailsFormSchema = z.object({
-  username: z.string({ required_error: 'Please fill this field' }),
+  username: z.string().trim().min(1, { message: 'Please fill this field' }),
   profilepicurl:
     typeof window === 'undefined'
       ? z.any()
@@ -75,14 +76,21 @@ const accountDetailsFormSchema = z.object({
                 : true,
             '.jpg, .jpeg, .png and .webp files are accepted.'
           ),
-  firstname: z.string({ required_error: 'Please fill this field' }),
-  lastname: z.string({ required_error: 'Please fill this field' }),
-  email: z.string({ required_error: 'Please fill this field' }).email(),
+  firstname: z.string().trim().min(1, { message: 'Please fill this field' }),
+  lastname: z.string().trim().min(1, { message: 'Please fill this field' }),
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' })
+    .email(),
   phone: z.coerce.number().optional(),
-  streetaddress: z.string({ required_error: 'Please fill this field' }),
-  city: z.string({ required_error: 'Please fill this field' }),
-  state: z.string({ required_error: 'Please fill this field' }),
-  country: z.string({ required_error: 'Please fill this field' }),
+  streetaddress: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' }),
+  city: z.string().trim().min(1, { message: 'Please fill this field' }),
+  state: z.string().trim().min(1, { message: 'Please fill this field' }),
+  country: z.string().trim().min(1, { message: 'Please fill this field' }),
   zipcode: z.coerce.number({ required_error: 'Please fill this field' }),
 });
 
@@ -112,6 +120,7 @@ export default function AccountDetailsForm() {
             >
               <h2 className="text-xl font-semibold">Basic Details</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {/* PROFILE PIC FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="profilepicurl"
@@ -152,6 +161,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* USERNAME FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="username"
@@ -167,6 +178,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* FIRST NAME FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="firstname"
@@ -182,6 +195,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* LAST NAME FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="lastname"
@@ -197,6 +212,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* EMAIL FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="email"
@@ -213,6 +230,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* PHONE NUMBER FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="phone"
@@ -226,11 +245,16 @@ export default function AccountDetailsForm() {
                           {...field}
                         />
                       </FormControl>
+                      <FormDescription>
+                        This information will not be disclosed publicly
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
+              {/* STREET ADDRESS FIELD */}
               <h2 className="text-xl font-semibold">Other Details</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField
@@ -244,10 +268,15 @@ export default function AccountDetailsForm() {
                       <FormControl>
                         <Textarea placeholder="address" {...field} />
                       </FormControl>
+                      <FormDescription>
+                        This information will not be disclosed publicly
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {/* CITY FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="city"
@@ -263,6 +292,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* STATE FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="state"
@@ -278,6 +309,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* COUNTRY FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="country"
@@ -343,6 +376,8 @@ export default function AccountDetailsForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* ZIP CODE FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
                   name="zipcode"
