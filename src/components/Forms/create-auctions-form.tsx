@@ -220,10 +220,10 @@ export default function CreateAuctionForm() {
                     <FormControl>
                       <Input placeholder="title" {...field} />
                     </FormControl>
-                    <FormMessage />
                     <FormDescription>
                       A valid title which describes your auction
                     </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -240,11 +240,11 @@ export default function CreateAuctionForm() {
                     <FormControl>
                       <Textarea placeholder="description" {...field} />
                     </FormControl>
-                    <FormMessage />
                     <FormDescription>
                       Provide a description with every possible details of your
                       auction item
                     </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -311,10 +311,10 @@ export default function CreateAuctionForm() {
                         </Command>
                       </PopoverContent>
                     </Popover>
-                    <FormMessage />
                     <FormDescription>
                       Select a category under which auction item belongs
                     </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -610,10 +610,10 @@ export default function CreateAuctionForm() {
                         />
                       </PopoverContent>
                     </Popover>
-                    <FormMessage />
                     <FormDescription>
                       Day when auction will start
                     </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -666,8 +666,8 @@ export default function CreateAuctionForm() {
                         />
                       </PopoverContent>
                     </Popover>
-                    <FormMessage />
                     <FormDescription>Day when auction will end</FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -689,10 +689,10 @@ export default function CreateAuctionForm() {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
                     <FormDescription>
                       A base price to bid on your auction
                     </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -715,10 +715,10 @@ export default function CreateAuctionForm() {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
                     <FormDescription>
                       A buy price to directly buy your auction
                     </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
