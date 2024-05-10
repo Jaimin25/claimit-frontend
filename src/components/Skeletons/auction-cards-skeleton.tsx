@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaClock, FaGavel, FaWallet } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 
@@ -43,7 +42,7 @@ export default function AuctionCardsSkeleton() {
         <Button variant={'outline'} className="w-full" disabled>
           Bid
         </Button>
-        <Button variant={'outline'} className="w-full" disabled>
+        <Button variant={'default'} className="w-full" disabled>
           Buy
         </Button>
       </CardFooter>

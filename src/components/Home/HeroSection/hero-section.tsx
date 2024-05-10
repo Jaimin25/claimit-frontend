@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { TrendingUp } from 'lucide-react';
 import { FaUser } from 'react-icons/fa';
@@ -19,9 +18,11 @@ export default function HeroSection() {
             Buy on Claimit
           </Button>
         </Link>
-        <Button variant={'outline'} className="w-36">
-          Sell on Claimit
-        </Button>
+        <Link href={'/auctions/create'}>
+          <Button variant={'default'} className="w-36">
+            Sell on Claimit
+          </Button>
+        </Link>
       </div>
       <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
         <Button

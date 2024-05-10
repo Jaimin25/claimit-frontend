@@ -18,7 +18,7 @@ export default function Footer() {
           <div className="items-center justify-center">
             <Link href={'/'}>
               <div className="flex items-center justify-center gap-1">
-                <RiAuctionLine size={28} />
+                <RiAuctionLine size={28} className="fill-violet-600" />
                 <h2 className="text-3xl">{APP_NAME}</h2>
               </div>
             </Link>

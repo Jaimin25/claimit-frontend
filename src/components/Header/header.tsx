@@ -19,7 +19,7 @@ export default function Header() {
     <nav className="fixed top-0 z-50 flex h-[48px] w-full items-center border border-b-gray-200 bg-white px-4 py-7 md:px-8">
       <Link href={'/'}>
         <div className="flex items-center gap-1">
-          <RiAuctionLine size={28} />
+          <RiAuctionLine size={28} className="fill-violet-600" />
           <h2 className="text-3xl">{APP_NAME}</h2>
         </div>
       </Link>
@@ -35,7 +35,7 @@ export default function Header() {
           <Button variant={'link'}>FAQs</Button>
         </Link>
         <Link href={'/signin'}>
-          <Button variant={'outline'}>Sign In</Button>
+          <Button variant={'default'}>Sign In</Button>
         </Link>
       </div>
       <div className="flex lg:hidden">

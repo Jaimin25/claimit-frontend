@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FaClock, FaWallet } from 'react-icons/fa';
-import { FaGavel } from 'react-icons/fa';
+import { FaClock, FaGavel, FaWallet } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 import { LuImageOff } from 'react-icons/lu';
 
@@ -76,7 +75,7 @@ export default function AuctionCards() {
           </Button>
         </Link>
         <Link href={`/auctions/view/id-2414`} className="w-full">
-          <Button variant={'outline'} className="w-full">
+          <Button variant={'default'} className="w-full">
             Buy
           </Button>
         </Link>
