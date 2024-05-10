@@ -2,6 +2,7 @@ import { Rubik } from 'next/font/google';
 
 import Footer from '@/components/Footer/footer';
 import Header from '@/components/Header/header';
+import { Toaster } from '@/components/ui/sonner';
 import { APP_NAME } from '@/lib/config';
 
 import '@/styles/globals.css';
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Header />
         <div className="mt-[56px] flex-1">{children}</div>
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

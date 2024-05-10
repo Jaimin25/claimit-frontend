@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,8 @@ export default function SignInForm() {
 
   const onSubmit = (values: z.infer<typeof signInFormSchema>) => {
     console.log(values);
+    const loginToast = toast.loading('Logging in...');
+    setTimeout(() => toast.success('Logged in', { id: loginToast }), 2000);
   };
 
   return (
