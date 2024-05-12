@@ -59,8 +59,8 @@ const accountDetailsFormSchema = z.object({
           .optional()
           .refine(
             (files) =>
-              files.length == 1
-                ? files[0].size <= MAX_FILE_SIZE
+              files?.length == 1
+                ? files?.[0]!.size <= MAX_FILE_SIZE
                   ? true
                   : false
                 : true,
@@ -69,7 +69,7 @@ const accountDetailsFormSchema = z.object({
           )
           .refine(
             (files) =>
-              files.length == 1
+              files?.length == 1
                 ? ACCEPTED_IMAGE_TYPES.includes(files?.[0]!.type)
                   ? true
                   : false
@@ -124,7 +124,7 @@ export default function AccountDetailsForm() {
                 <FormField
                   control={accountDetailsForm.control}
                   name="profilepicurl"
-                  render={() => (
+                  render={({ field: { onChange } }) => (
                     <FormItem>
                       <FormLabel>Profile Pic</FormLabel>
                       <FormControl>
@@ -152,6 +152,15 @@ export default function AccountDetailsForm() {
                                     e.target.files![0]!
                                   ).toString()
                                 );
+                                const dataTransfer = new DataTransfer();
+
+                                // Add newly uploaded images
+                                Array.from(e.target.files!).forEach((image) =>
+                                  dataTransfer.items.add(image)
+                                );
+
+                                const files = dataTransfer.files;
+                                onChange(files);
                               }}
                             />
                           </div>
