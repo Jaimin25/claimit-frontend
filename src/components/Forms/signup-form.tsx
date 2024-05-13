@@ -40,6 +40,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Config } from '@/lib/config';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 
 const countries = [
   { label: 'India', value: 'india' },
@@ -77,38 +78,38 @@ const signUpFormSchema = z
     path: ['cpassword'],
   });
 
+async function signUpSubmit(values: z.infer<typeof signUpFormSchema>) {
+  const hashedPassword = await bcrypt.hash(values.cpassword, 10);
+  return await axios.post(`${Config.API_URL}/signup`, {
+    username: values.username,
+    firstname: values.firstname,
+    lastname: values.lastname,
+    phoneno: String(values.phone),
+    email: values.email,
+    password: hashedPassword,
+    streetAddress: values.streetaddress,
+    city: values.city,
+    state: values.state,
+    country: values.country,
+    zipcode: String(values.zipcode),
+  });
+}
+
 export default function SignUpForm() {
   const router = useRouter();
-  const [isChecked, setIsChecked] = useState(false);
 
-  const signUpForm = useForm<z.infer<typeof signUpFormSchema>>({
-    resolver: zodResolver(signUpFormSchema),
-  });
+  const [toastId, setToastId] = useState<string | number>();
 
-  const onSubmit = async (values: z.infer<typeof signUpFormSchema>) => {
-    const hashedPassword = await bcrypt.hash(values.cpassword, 10);
-    const loadingToast = toast.loading('Creating account...');
-    try {
-      const res = await axios.post(`${Config.API_URL}/signup`, {
-        username: values.username,
-        firstname: values.firstname,
-        lastname: values.lastname,
-        phoneno: String(values.phone),
-        email: values.email,
-        password: hashedPassword,
-        streetAddress: values.streetaddress,
-        city: values.city,
-        state: values.state,
-        country: values.country,
-        zipcode: String(values.zipcode),
-      });
-      const data = await res.data;
+  const mutation = useMutation({
+    mutationFn: signUpSubmit,
+    onSuccess: (res) => {
+      const data = res.data;
 
       if (data.statusCode === 200) {
         signUpForm.reset();
         router.push('/signin');
 
-        toast.success('Account created successfully!', { id: loadingToast });
+        toast.success('Account created successfully!', { id: toastId });
         setTimeout(() => {
           toast.success(
             'A verification mail has been sent at your registered email!',
@@ -116,11 +117,23 @@ export default function SignUpForm() {
           );
         }, 1500);
       } else {
-        toast.error(data.statusMessage, { id: loadingToast });
+        toast.error(data.statusMessage, { id: toastId });
       }
-    } catch (e) {
-      toast.error((e as Error).message, { id: loadingToast });
-    }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, { id: toastId }),
+  });
+
+  const [isChecked, setIsChecked] = useState(false);
+
+  const signUpForm = useForm<z.infer<typeof signUpFormSchema>>({
+    resolver: zodResolver(signUpFormSchema),
+  });
+
+  const onSubmit = async (values: z.infer<typeof signUpFormSchema>) => {
+    mutation.mutate(values);
+    const currentToastId = toast.loading('Creating account...');
+    setToastId(currentToastId);
   };
 
   return (
@@ -422,7 +435,11 @@ export default function SignUpForm() {
                 </div>
               </div>
               <div>
-                <Button type="submit" className="w-full" disabled={!isChecked}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!isChecked || mutation.isPending}
+                >
                   Register
                 </Button>
               </div>
