@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { FaCheck, FaEdit } from 'react-icons/fa';
 import { LuChevronsUpDown } from 'react-icons/lu';
@@ -99,8 +100,27 @@ export default function AccountDetailsForm() {
     resolver: zodResolver(accountDetailsFormSchema),
   });
 
+  useEffect(() => {
+    const fetch = async () => {
+      axios.defaults.withCredentials = true;
+      const res = await axios.post('http://localhost:8000/api/v1/authMe');
+      const data = await res.data;
+      console.log(data);
+    };
+
+    fetch();
+  }, []);
+
   const onSubmit = (values: z.infer<typeof accountDetailsFormSchema>) => {
     console.log(values);
+    const logOut = async () => {
+      axios.defaults.withCredentials = true;
+      const res = await axios.post('http://localhost:8000/api/v1/signout');
+      const data = await res.data;
+      console.log(data);
+    };
+
+    logOut();
   };
 
   const [preview, setPreview] = useState('');
@@ -407,11 +427,10 @@ export default function AccountDetailsForm() {
                   )}
                 />
               </div>
-              <div>
-                <Button type="submit">Save</Button>
-              </div>
+              <div></div>
             </form>
           </Form>
+          <Button onClick={onSubmitz}>Save</Button>
         </CardContent>
       </Card>
     </div>

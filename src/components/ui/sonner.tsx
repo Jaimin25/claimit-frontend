@@ -24,6 +24,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         },
       }}
       {...props}
+      duration={2000}
     />
   );
 };

@@ -12,7 +12,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from '@/components/ui/menubar';
-import { APP_NAME } from '@/lib/config';
+import { Config } from '@/lib/config';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
@@ -22,7 +22,7 @@ export default function Header() {
       <Link href={'/'}>
         <div className="flex items-center gap-1">
           <RiAuctionLine size={28} className="fill-violet-600" />
-          <h2 className="text-3xl">{APP_NAME}</h2>
+          <h2 className="text-3xl">{Config.APP_NAME}</h2>
         </div>
       </Link>
       <div className="flex-1" />

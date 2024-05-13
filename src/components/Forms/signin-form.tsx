@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -15,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Config } from '@/lib/config';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const signInFormSchema = z.object({
@@ -38,11 +40,23 @@ export default function SignInForm() {
   const onSubmit = (values: z.infer<typeof signInFormSchema>) => {
     console.log(values);
     const loginToast = toast.loading('Logging in...');
+    try {
+      const submit = async () => {
+        axios.defaults.withCredentials = true;
+
+        const res = await axios.post(`${Config.API_URL}/signin`);
+        const data = await res.data;
+        console.log(data);
+      };
+      submit();
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
     setTimeout(() => toast.success('Logged in', { id: loginToast }), 2000);
   };
 
   return (
-    <div className="signin-form-container m-8 w-10/12 sm:w-2/5 md:w-2/5 lg:w-1/4">
+    <div className="signin-form-container m-8  w-10/12 sm:w-8/12 lg:w-5/12">
       <Card>
         <CardHeader>
           <h3 className="text-3xl font-semibold">Sign In</h3>

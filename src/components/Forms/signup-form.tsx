@@ -1,10 +1,14 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import bcrypt from 'bcryptjs';
 import { CommandList } from 'cmdk';
 import { useForm } from 'react-hook-form';
 import { FaCheck } from 'react-icons/fa';
 import { LuChevronsUpDown } from 'react-icons/lu';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -33,6 +37,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
+import { Config } from '@/lib/config';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -41,45 +46,85 @@ const countries = [
   { label: 'Country2', value: 'country2' },
 ] as const;
 
-const signUpFormSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(1, { message: 'Please fill this field' })
-    .refine((s) => !s.includes(' '), 'Username should not have spaces'),
-  firstname: z.string().trim().min(1, { message: 'Please fill this field' }),
-  lastname: z.string().trim().min(1, { message: 'Please fill this field' }),
-  email: z
-    .string()
-    .trim()
-    .min(1, { message: 'Please fill this field' })
-    .email(),
-  phone: z.coerce.number().optional(),
-  password: z.string().trim().min(6),
-  cpassword: z.string().trim().min(6),
-  streetaddress: z
-    .string()
-    .trim()
-    .min(1, { message: 'Please fill this field' }),
-  city: z.string().trim().min(1, { message: 'Please fill this field' }),
-  state: z.string().trim().min(1, { message: 'Please fill this field' }),
-  country: z.string().trim().min(1, { message: 'Please fill this field' }),
-  zipcode: z.coerce.number({ required_error: 'Please fill this field' }),
-});
+const signUpFormSchema = z
+  .object({
+    username: z
+      .string()
+      .trim()
+      .min(3, { message: 'Username must be of atleast 3 chars' })
+      .refine((s) => !s.includes(' '), 'Username should not have spaces'),
+    firstname: z.string().trim().min(1, { message: 'Please fill this field' }),
+    lastname: z.string().trim().min(1, { message: 'Please fill this field' }),
+    email: z
+      .string()
+      .trim()
+      .min(1, { message: 'Please fill this field' })
+      .email(),
+    phone: z.coerce.number().optional(),
+    password: z.string().trim().min(6),
+    cpassword: z.string().trim().min(6),
+    streetaddress: z
+      .string()
+      .trim()
+      .min(1, { message: 'Please fill this field' }),
+    city: z.string().trim().min(1, { message: 'Please fill this field' }),
+    state: z.string().trim().min(1, { message: 'Please fill this field' }),
+    country: z.string().trim().min(1, { message: 'Please fill this field' }),
+    zipcode: z.coerce.number({ required_error: 'Please fill this field' }),
+  })
+  .refine((data) => data.password === data.cpassword, {
+    message: "Passwords don't match",
+    path: ['cpassword'],
+  });
 
 export default function SignUpForm() {
+  const router = useRouter();
   const [isChecked, setIsChecked] = useState(false);
 
   const signUpForm = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const onSubmit = (values: z.infer<typeof signUpFormSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof signUpFormSchema>) => {
+    const hashedPassword = await bcrypt.hash(values.cpassword, 10);
+    const loadingToast = toast.loading('Creating account...');
+    try {
+      const res = await axios.post(`${Config.API_URL}/signup`, {
+        username: values.username,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        phoneno: String(values.phone),
+        email: values.email,
+        password: hashedPassword,
+        streetAddress: values.streetaddress,
+        city: values.city,
+        state: values.state,
+        country: values.country,
+        zipcode: String(values.zipcode),
+      });
+      const data = await res.data;
+
+      if (data.statusCode === 200) {
+        signUpForm.reset();
+        router.push('/signin');
+
+        toast.success('Account created successfully!', { id: loadingToast });
+        setTimeout(() => {
+          toast.success(
+            'A verification mail has been sent at your registered email!',
+            { duration: 3000 }
+          );
+        }, 1500);
+      } else {
+        toast.error(data.statusMessage, { id: loadingToast });
+      }
+    } catch (e) {
+      toast.error((e as Error).message, { id: loadingToast });
+    }
   };
 
   return (
-    <div className="contact-form-container m-8 w-10/12 sm:w-8/12 md:w-6/12 lg:w-5/12">
+    <div className="contact-form-container m-8 w-10/12 sm:w-8/12 lg:w-5/12">
       <Card>
         <CardHeader>
           <h3 className="text-3xl font-semibold">Sign Up</h3>
