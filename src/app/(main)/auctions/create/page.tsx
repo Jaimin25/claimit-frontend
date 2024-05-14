@@ -1,5 +1,3 @@
-import React from 'react';
-
 import CreateAuction from '@/components/Auctions/Create/create-auction';
 
 export default function CreateAuctionPage() {

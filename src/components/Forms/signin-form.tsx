@@ -1,5 +1,7 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -18,6 +20,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Config } from '@/lib/config';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+
+import { useUser } from '../Providers/user-provider';
 
 const signInFormSchema = z.object({
   emailOrPhone: z
@@ -32,27 +37,44 @@ const signInFormSchema = z.object({
   password: z.string().trim().min(6),
 });
 
+async function signInSubmit(values: z.infer<typeof signInFormSchema>) {
+  return await axios.post(`${Config.APP_URL}/api/signin`, {
+    emailOrPhone: values.emailOrPhone,
+    password: values.password,
+  });
+}
+
 export default function SignInForm() {
+  const { fetchUser } = useUser();
+  const router = useRouter();
+  const [toastId, setToastId] = useState<string | number>();
+
+  const mutation = useMutation({
+    mutationFn: signInSubmit,
+    onSuccess: (res) => {
+      const data = res.data;
+
+      if (data.statusCode === 200) {
+        toast.success(data.statusMessage, { id: toastId });
+        fetchUser();
+        router.push('/dashboard/accountdetails');
+        router.refresh();
+      } else {
+        toast.error(data.statusMessage, { id: toastId });
+      }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, { id: toastId }),
+  });
+
   const signInForm = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
   });
 
   const onSubmit = (values: z.infer<typeof signInFormSchema>) => {
-    console.log(values);
-    const loginToast = toast.loading('Logging in...');
-    try {
-      const submit = async () => {
-        axios.defaults.withCredentials = true;
-
-        const res = await axios.post(`${Config.API_URL}/signin`);
-        const data = await res.data;
-        console.log(data);
-      };
-      submit();
-    } catch (e) {
-      toast.error((e as Error).message);
-    }
-    setTimeout(() => toast.success('Logged in', { id: loginToast }), 2000);
+    mutation.mutate(values);
+    const currentToastId = toast.loading('Signing in...');
+    setToastId(currentToastId);
   };
 
   return (
@@ -117,7 +139,11 @@ export default function SignInForm() {
                 )}
               />
               <div>
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={mutation.isPending}
+                >
                   Login
                 </Button>
               </div>

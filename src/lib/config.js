@@ -4,6 +4,6 @@ export const Config = {
     process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '',
   API_URL:
     process.env.NODE_ENV === 'development'
-      ? 'https://localhost:8000/api/v1'
+      ? 'http://localhost:8000/api/v1'
       : '',
 };

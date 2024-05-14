@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import bcrypt from 'bcryptjs';
 import { CommandList } from 'cmdk';
 import { useForm } from 'react-hook-form';
 import { FaCheck } from 'react-icons/fa';
@@ -79,14 +78,13 @@ const signUpFormSchema = z
   });
 
 async function signUpSubmit(values: z.infer<typeof signUpFormSchema>) {
-  const hashedPassword = await bcrypt.hash(values.cpassword, 10);
   return await axios.post(`${Config.API_URL}/signup`, {
     username: values.username,
     firstname: values.firstname,
     lastname: values.lastname,
     phoneno: String(values.phone),
     email: values.email,
-    password: hashedPassword,
+    password: values.password,
     streetAddress: values.streetaddress,
     city: values.city,
     state: values.state,

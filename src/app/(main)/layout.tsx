@@ -2,7 +2,7 @@ import { Rubik } from 'next/font/google';
 
 import Footer from '@/components/Footer/footer';
 import Header from '@/components/Header/header';
-import QueryProvider from '@/components/Providers/query-provider';
+import BaseProvider from '@/components/Providers/base-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { Config } from '@/lib/config';
 
@@ -27,12 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={rubik.variable}>
       <body className={`grainy ${rubik.variable}`}>
-        <QueryProvider>
+        <BaseProvider>
           <Header />
           <div className="mt-[56px] flex-1">{children}</div>
           <Footer />
           <Toaster />
-        </QueryProvider>
+        </BaseProvider>
       </body>
     </html>
   );

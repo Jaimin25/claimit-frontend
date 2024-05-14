@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { FaCheck, FaEdit } from 'react-icons/fa';
 import { LuChevronsUpDown } from 'react-icons/lu';
@@ -35,6 +34,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { useUser } from '../Providers/user-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const countries = [
@@ -96,32 +96,28 @@ const accountDetailsFormSchema = z.object({
 });
 
 export default function AccountDetailsForm() {
+  const { user } = useUser();
+
   const accountDetailsForm = useForm<z.infer<typeof accountDetailsFormSchema>>({
     resolver: zodResolver(accountDetailsFormSchema),
   });
 
-  useEffect(() => {
-    const fetch = async () => {
-      axios.defaults.withCredentials = true;
-      const res = await axios.post('http://localhost:8000/api/v1/authMe');
-      const data = await res.data;
-      console.log(data);
-    };
-
-    fetch();
-  }, []);
-
   const onSubmit = (values: z.infer<typeof accountDetailsFormSchema>) => {
     console.log(values);
-    const logOut = async () => {
-      axios.defaults.withCredentials = true;
-      const res = await axios.post('http://localhost:8000/api/v1/signout');
-      const data = await res.data;
-      console.log(data);
-    };
-
-    logOut();
   };
+
+  useEffect(() => {
+    accountDetailsForm.setValue('username', user?.username as string);
+    accountDetailsForm.setValue('firstname', user?.firstname as string);
+    accountDetailsForm.setValue('lastname', user?.lastname as string);
+    accountDetailsForm.setValue('email', user?.email as string);
+    accountDetailsForm.setValue('phone', Number(user?.phoneno as string));
+    accountDetailsForm.setValue('streetaddress', user?.streetAddress as string);
+    accountDetailsForm.setValue('city', user?.city as string);
+    accountDetailsForm.setValue('state', user?.state as string);
+    accountDetailsForm.setValue('country', user?.country as string);
+    accountDetailsForm.setValue('zipcode', Number(user?.zipcode as string));
+  }, [user, accountDetailsForm]);
 
   const [preview, setPreview] = useState('');
   const fileRef = accountDetailsForm.register('profilepicurl');
@@ -250,7 +246,7 @@ export default function AccountDetailsForm() {
                     <FormItem>
                       <FormLabel>
                         Email <span className="text-red-500">*</span>{' '}
-                        (Unverified)
+                        {!user?.emailVerified && '(Unverified)'}
                       </FormLabel>
                       <FormControl>
                         <Input placeholder="email" {...field} />
@@ -427,10 +423,9 @@ export default function AccountDetailsForm() {
                   )}
                 />
               </div>
-              <div></div>
+              <Button type="submit">Save</Button>
             </form>
           </Form>
-          <Button onClick={onSubmitz}>Save</Button>
         </CardContent>
       </Card>
     </div>
