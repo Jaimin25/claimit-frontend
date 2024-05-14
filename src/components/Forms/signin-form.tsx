@@ -78,7 +78,7 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="signin-form-container m-8  w-10/12 sm:w-8/12 lg:w-5/12">
+    <div className="signin-form-container m-8  w-10/12 sm:w-8/12 md:w-1/2 lg:w-1/4">
       <Card>
         <CardHeader>
           <h3 className="text-3xl font-semibold">Sign In</h3>
