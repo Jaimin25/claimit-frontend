@@ -79,7 +79,11 @@ const accountDetailsFormSchema = z.object({
           ),
   firstname: z.string().trim().min(1, { message: 'Please fill this field' }),
   lastname: z.string().trim().min(1, { message: 'Please fill this field' }),
-  email: z.string().trim().min(1, { message: 'Please fill this fiel' }).email(),
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: 'Please fill this field' })
+    .email(),
   phone: z.coerce.number().optional(),
   streetaddress: z
     .string()
