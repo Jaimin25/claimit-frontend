@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { FaCheck, FaEdit } from 'react-icons/fa';
 import { LuChevronsUpDown } from 'react-icons/lu';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -31,8 +33,10 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
+import { Config } from '@/lib/config';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 
 import { useUser } from '../Providers/user-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -95,8 +99,31 @@ const accountDetailsFormSchema = z.object({
   zipcode: z.coerce.number({ required_error: 'Please fill this field' }),
 });
 
+const sendVerificationMail = async () => {
+  return await axios.post(`${Config.API_URL}/resendVerificationMail`, '', {
+    withCredentials: true,
+  });
+};
+
 export default function AccountDetailsForm() {
+  const [toastId, setToastId] = useState<string | number>();
+
   const { user } = useUser();
+
+  const mutation = useMutation({
+    mutationFn: sendVerificationMail,
+    onSuccess: async (res) => {
+      const data = await res.data;
+
+      if (data.statusCode === 200) {
+        toast.success(data.statusMessage, { id: toastId });
+      } else {
+        toast.error(data.statusMessage, { id: toastId });
+      }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, { id: toastId }),
+  });
 
   const accountDetailsForm = useForm<z.infer<typeof accountDetailsFormSchema>>({
     resolver: zodResolver(accountDetailsFormSchema),
@@ -251,6 +278,22 @@ export default function AccountDetailsForm() {
                       <FormControl>
                         <Input placeholder="email" {...field} />
                       </FormControl>
+                      {!user?.emailVerified && (
+                        <Button
+                          variant={'link'}
+                          type="button"
+                          className="px-0 underline"
+                          onClick={() => {
+                            mutation.mutate();
+                            const currentToastId =
+                              toast.loading('Sending mail...');
+                            setToastId(currentToastId);
+                          }}
+                          disabled={mutation.isPending}
+                        >
+                          Resend verification mail
+                        </Button>
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
