@@ -56,7 +56,7 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const accountDetailsFormSchema = z.object({
   username: z.string().trim().min(1, { message: 'Please fill this field' }),
-  profilepicurl:
+  profilepicfile:
     typeof window === 'undefined'
       ? z.any()
       : z
@@ -88,8 +88,8 @@ const accountDetailsFormSchema = z.object({
     .trim()
     .min(1, { message: 'Please fill this field' })
     .email(),
-  phone: z.coerce.number().optional(),
-  streetaddress: z
+  phoneno: z.coerce.number().optional(),
+  streetAddress: z
     .string()
     .trim()
     .min(1, { message: 'Please fill this field' }),
@@ -105,10 +105,42 @@ const sendVerificationMail = async () => {
   });
 };
 
+const sendUpdateUserData = async (values: FormData) => {
+  return await axios.post(`${Config.API_URL}/user/updateUserData`, values, {
+    withCredentials: true,
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
+};
+
+type AccountDataProp = {
+  username: string;
+  firstname: string;
+  lastname: string;
+  phoneno: string;
+  email: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  country: string;
+  zipcode: string;
+};
+
 export default function AccountDetailsForm() {
+  const accountDetailsForm = useForm<z.infer<typeof accountDetailsFormSchema>>({
+    resolver: zodResolver(accountDetailsFormSchema),
+  });
+
+  const [initialValues, setInitialValues] =
+    useState<Partial<AccountDataProp>>();
+
   const [toastId, setToastId] = useState<string | number>();
 
-  const { user } = useUser();
+  const [preview, setPreview] = useState('');
+  const fileRef = accountDetailsForm.register('profilepicfile');
+
+  const { user, updateUserData } = useUser();
 
   const mutation = useMutation({
     mutationFn: sendVerificationMail,
@@ -125,29 +157,87 @@ export default function AccountDetailsForm() {
       toast.error(`${error.name}: ${error.message}`, { id: toastId }),
   });
 
-  const accountDetailsForm = useForm<z.infer<typeof accountDetailsFormSchema>>({
-    resolver: zodResolver(accountDetailsFormSchema),
+  const updateUserMutation = useMutation({
+    mutationFn: sendUpdateUserData,
+    onSuccess: async (res) => {
+      const data = await res.data;
+
+      if (data.statusCode === 200) {
+        toast.success(data.statusMessage, { id: toastId });
+        updateUserData(data.userData[0]);
+        setPreview(user?.profilePicUrl as string);
+
+        accountDetailsForm.reset();
+        setInitialValues(data.userData[0] as AccountDataProp);
+      } else {
+        toast.error(data.statusMessage, { id: toastId });
+      }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, { id: toastId }),
   });
 
   const onSubmit = (values: z.infer<typeof accountDetailsFormSchema>) => {
-    console.log(values);
+    values.profilepicfile = values.profilepicfile[0] as File;
+    const formData = new FormData();
+
+    const changedFields: Partial<AccountDataProp> = {};
+
+    for (const key in initialValues) {
+      const typedKey = key as keyof AccountDataProp;
+      if (String(values[typedKey]) !== String(initialValues[typedKey])) {
+        changedFields[typedKey] = String(values[typedKey]);
+      }
+    }
+
+    if (Object.keys(changedFields).length === 0 && !values.profilepicfile) {
+      return toast.error('Nothing to update!');
+    }
+
+    const json = JSON.stringify(changedFields);
+
+    if (values.profilepicfile) {
+      formData.append('file', values.profilepicfile);
+    }
+    formData.append('document', json);
+
+    updateUserMutation.mutate(formData);
+
+    const currentToastId = toast.loading('Updating profile...');
+    setToastId(currentToastId);
   };
 
   useEffect(() => {
-    accountDetailsForm.setValue('username', user?.username as string);
-    accountDetailsForm.setValue('firstname', user?.firstname as string);
-    accountDetailsForm.setValue('lastname', user?.lastname as string);
-    accountDetailsForm.setValue('email', user?.email as string);
-    accountDetailsForm.setValue('phone', Number(user?.phoneno as string));
-    accountDetailsForm.setValue('streetaddress', user?.streetAddress as string);
-    accountDetailsForm.setValue('city', user?.city as string);
-    accountDetailsForm.setValue('state', user?.state as string);
-    accountDetailsForm.setValue('country', user?.country as string);
-    accountDetailsForm.setValue('zipcode', Number(user?.zipcode as string));
-  }, [user, accountDetailsForm]);
+    setPreview(user?.profilePicUrl as string);
+    type UnAllowedKeys =
+      | 'initials'
+      | 'emailVerified'
+      | 'accountStatus'
+      | 'accountType'
+      | 'profilePicUrl'
+      | 'identityVerified'
+      | 'role';
 
-  const [preview, setPreview] = useState('');
-  const fileRef = accountDetailsForm.register('profilepicurl');
+    const unWantedKeys: UnAllowedKeys[] = [
+      'initials',
+      'accountStatus',
+      'accountType',
+      'emailVerified',
+      'identityVerified',
+      'profilePicUrl',
+      'role',
+    ];
+    const iniVals: Partial<AccountDataProp> = {};
+
+    for (const key in user) {
+      if (!unWantedKeys.includes(key as UnAllowedKeys)) {
+        const typedKey = key as keyof AccountDataProp;
+        accountDetailsForm.setValue(typedKey, user[typedKey]);
+        iniVals[typedKey] = user[typedKey] as string;
+      }
+    }
+    setInitialValues(iniVals);
+  }, [user, accountDetailsForm]);
 
   return (
     <div className="h-full w-full">
@@ -166,14 +256,19 @@ export default function AccountDetailsForm() {
                 {/* PROFILE PIC FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
-                  name="profilepicurl"
+                  name="profilepicfile"
                   render={({ field: { onChange } }) => (
                     <FormItem>
                       <FormLabel>Profile Pic</FormLabel>
                       <FormControl>
                         <div className="flex gap-2">
                           <Avatar className="h-32 w-32">
-                            <AvatarImage src={preview} />
+                            <AvatarImage
+                              src={preview}
+                              alt={preview}
+                              key={preview}
+                              className="object-cover"
+                            />
                             <AvatarFallback>IMG</AvatarFallback>
                           </Avatar>
                           <div className="flex items-center">
@@ -302,7 +397,7 @@ export default function AccountDetailsForm() {
                 {/* PHONE NUMBER FIELD */}
                 <FormField
                   control={accountDetailsForm.control}
-                  name="phone"
+                  name="phoneno"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone Number</FormLabel>
@@ -327,7 +422,7 @@ export default function AccountDetailsForm() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField
                   control={accountDetailsForm.control}
-                  name="streetaddress"
+                  name="streetAddress"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
@@ -466,7 +561,12 @@ export default function AccountDetailsForm() {
                   )}
                 />
               </div>
-              <Button type="submit">Save</Button>
+              <Button
+                type="submit"
+                disabled={mutation.isPending || updateUserMutation.isPending}
+              >
+                Save
+              </Button>
             </form>
           </Form>
         </CardContent>
