@@ -95,7 +95,10 @@ export default function Header() {
               <MenubarTrigger>
                 <Avatar>
                   <AvatarFallback>{user?.initials}</AvatarFallback>
-                  <AvatarImage src={user?.profilePicUrl} />
+                  <AvatarImage
+                    src={user?.profilePicUrl}
+                    className="object-cover"
+                  />
                 </Avatar>
               </MenubarTrigger>
               <MenubarContent>

@@ -263,7 +263,12 @@ export default function AccountDetailsForm() {
                       <FormControl>
                         <div className="flex gap-2">
                           <Avatar className="h-32 w-32">
-                            <AvatarImage src={preview} />
+                            <AvatarImage
+                              src={preview}
+                              alt={preview}
+                              key={preview}
+                              className="object-cover"
+                            />
                             <AvatarFallback>IMG</AvatarFallback>
                           </Avatar>
                           <div className="flex items-center">
