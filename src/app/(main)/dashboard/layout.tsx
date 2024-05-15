@@ -3,7 +3,7 @@ import React from 'react';
 import MobileNav from '@/components/Dashboard/mobile-nav';
 import Sidebar from '@/components/Dashboard/sidebar';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;

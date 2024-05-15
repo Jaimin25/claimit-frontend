@@ -6,7 +6,7 @@ import {
   RiTwitterLine,
 } from 'react-icons/ri';
 
-import { APP_NAME } from '@/lib/config';
+import { Config } from '@/lib/config';
 
 import { Button } from '../ui/button';
 
@@ -19,7 +19,7 @@ export default function Footer() {
             <Link href={'/'}>
               <div className="flex items-center justify-center gap-1">
                 <RiAuctionLine size={28} className="fill-violet-600" />
-                <h2 className="text-3xl">{APP_NAME}</h2>
+                <h2 className="text-3xl">{Config.APP_NAME}</h2>
               </div>
             </Link>
           </div>
@@ -58,7 +58,7 @@ export default function Footer() {
       </div>
       <div>
         <p className="text-center">
-          © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
+          © {new Date().getFullYear()} {Config.APP_NAME}. All rights reserved.
         </p>
       </div>
     </footer>
