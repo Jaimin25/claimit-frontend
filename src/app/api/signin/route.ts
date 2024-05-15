@@ -22,12 +22,7 @@ export async function POST(req: NextRequest) {
     const sessionData = secondCookie?.split('=')[1]?.split(';')[0]; // Assuming the format is "session=data"
     console.log(cookie);
     const store = cookies();
-    store.set('session', `${sessionData}`, {
-      secure: true,
-      httpOnly: true,
-      sameSite: 'none',
-      path: '/',
-    });
+    store.set('session', `${sessionData}`);
 
     return NextResponse.json(resData);
   } else {

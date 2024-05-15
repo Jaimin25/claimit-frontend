@@ -57,13 +57,13 @@ export const useUser = () => {
 };
 
 const fetchUserFn = async () => {
-  return await axios.post(`${Config.API_URL}/user/getUserData`, '', {
+  return await axios.post(`${Config.APP_URL}/api/user/getUserData`, '', {
     withCredentials: true,
   });
 };
 
 const checkAuthentication = async () => {
-  return await axios.post(`${Config.API_URL}/authUser`, '', {
+  return await axios.post(`${Config.APP_URL}/api/authUser`, '', {
     withCredentials: true,
   });
 };
