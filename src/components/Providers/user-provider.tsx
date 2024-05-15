@@ -12,7 +12,7 @@ interface UserProps {
   firstname: string;
   lastname: string;
   initials: string;
-  phoneno: string;
+  phoneno: number;
   profilePicUrl: string;
   role: 'USER' | 'MODS' | 'ADMIN';
   accountStatus: 'ACTIVE' | 'BLACKLIST' | 'BANNED';
@@ -23,15 +23,25 @@ interface UserProps {
   email: string;
   emailVerified: boolean;
   streetAddress: string;
-  zipcode: string;
+  zipcode: number;
   identityVerified: boolean;
 }
+
+type UserUpdateProps = Omit<
+  UserProps,
+  | 'identityVerified'
+  | 'role'
+  | 'accountStatus'
+  | 'accountType'
+  | 'emailVerified'
+>;
 
 interface UserContextProps {
   user: UserProps | undefined | null;
   isAuthenticated: boolean;
   fetchUser: () => void;
   signOut: () => void;
+  updateUserData: (user: UserUpdateProps) => void;
 }
 
 const UserContext = createContext<UserContextProps>({
@@ -39,6 +49,7 @@ const UserContext = createContext<UserContextProps>({
   isAuthenticated: false,
   fetchUser: () => {},
   signOut: () => {},
+  updateUserData: () => {},
 });
 
 export const useUser = () => {
@@ -107,8 +118,24 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
   };
 
+  const updateUserData = (userData: UserUpdateProps) => {
+    const currentUserData: UserProps = user as UserProps;
+
+    const newUserData = {
+      ...userData,
+      emailVerified: currentUserData.emailVerified,
+      identityVerified: currentUserData.identityVerified,
+      role: currentUserData.role,
+      accountStatus: currentUserData.accountStatus,
+      accountType: currentUserData.accountType,
+    };
+    setUser(newUserData);
+  };
+
   return (
-    <UserContext.Provider value={{ user, fetchUser, isAuthenticated, signOut }}>
+    <UserContext.Provider
+      value={{ user, fetchUser, isAuthenticated, signOut, updateUserData }}
+    >
       {children}
     </UserContext.Provider>
   );
