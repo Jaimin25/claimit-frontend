@@ -20,9 +20,14 @@ export async function POST(req: NextRequest) {
 
     // Extract the actual cookie value (session data) from the string:
     const sessionData = secondCookie?.split('=')[1]?.split(';')[0]; // Assuming the format is "session=data"
-
+    console.log(cookie);
     const store = cookies();
-    store.set('session', `${sessionData}`);
+    store.set('session', `${sessionData}`, {
+      secure: true,
+      httpOnly: true,
+      sameSite: 'none',
+      path: '/',
+    });
 
     return NextResponse.json(resData);
   } else {
