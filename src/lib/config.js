@@ -7,5 +7,5 @@ export const Config = {
   API_URL:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:8000/api/v1'
-      : 'https://claimit-backend.onrender.com',
+      : 'https://claimit-backend.onrender.com/api/v1',
 };
