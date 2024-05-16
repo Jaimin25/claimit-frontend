@@ -16,6 +16,11 @@ cloudinary.config({
 });
 
 async function uploadProfilePic(file: File, publicId: string) {
+  console.log(
+    process.env.CLOUDINARY_NAME,
+    process.env.CLOUDINARY_API_KEY,
+    process.env.CLOUDINARY_API_SECRET
+  );
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   // const res = await cloudinary.uploader
