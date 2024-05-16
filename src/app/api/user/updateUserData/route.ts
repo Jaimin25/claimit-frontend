@@ -21,15 +21,15 @@ export async function POST(req: NextRequest) {
 
     const res = await axios.post(
       `${Config.API_URL}/user/updateUserData`,
-      {
+      JSON.stringify({
         document: formData.get('document') as string,
         profileImgFileBase64: formData.get('profileImgFileBase64') as string,
-      },
+      }),
       {
         withCredentials: true,
         headers: {
           cookie: `session=${req.cookies.get('session')?.value}`,
-          'Content-Length': req.headers.get('content-length'),
+          // 'content-length': contentLength,
         },
       }
     );
