@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
-import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import {
+  UploadApiErrorResponse,
+  UploadApiResponse,
+  v2 as cloudinary,
+} from 'cloudinary';
 import FormData from 'form-data';
 
-import { cloudinary, Config } from '@/lib/config';
+import { Config } from '@/lib/config';
 
 async function uploadProfilePic(file: File, publicId: string) {
   const arrayBuffer = await file.arrayBuffer();
@@ -21,6 +25,11 @@ async function uploadProfilePic(file: File, publicId: string) {
     status: boolean;
     message: UploadApiResponse | UploadApiErrorResponse | undefined;
   }>((resolve, reject) => {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
     cloudinary.uploader
       .upload_stream(
         {
