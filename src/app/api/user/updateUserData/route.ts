@@ -7,7 +7,7 @@ import { Config } from '@/lib/config';
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const imgFileBase64 = formData.get('profileImgFileBase64') as File;
-
+  console.log(req.headers);
   try {
     const newFd = new FormData();
     newFd.append('document', formData.get('document') as string);
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
         withCredentials: true,
         headers: {
           cookie: `session=${req.cookies.get('session')?.value}`,
+          'Content-Length': req.headers.get('content-length'),
         },
       }
     );
