@@ -106,7 +106,7 @@ const sendVerificationMail = async () => {
 };
 
 const sendUpdateUserData = async (values: FormData) => {
-  return await axios.post(`${Config.API_URL}/user/updateUserData`, values, {
+  return await axios.post(`${Config.APP_URL}/api/user/updateUserData`, values, {
     withCredentials: true,
     headers: {
       'content-type': 'multipart/form-data',
