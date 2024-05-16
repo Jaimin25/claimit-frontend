@@ -9,7 +9,7 @@ import FormData from 'form-data';
 
 import { Config } from '@/lib/config';
 
-async function uploadProfilePic(file: File, publicId: string) {
+export async function uploadProfilePic(file: File, publicId: string) {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   // const res = await cloudinary.uploader
@@ -26,9 +26,9 @@ async function uploadProfilePic(file: File, publicId: string) {
     message: UploadApiResponse | UploadApiErrorResponse | undefined;
   }>((resolve, reject) => {
     cloudinary.config({
-      cloud_name: 'dfekfdfbb',
-      api_key: '146218175858287',
-      api_secret: 'u4qkQAxiY5MTe4oy8OXHv5F9vjM',
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
     });
     cloudinary.uploader
       .upload_stream(
