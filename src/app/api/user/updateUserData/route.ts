@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
-import path from 'path';
+import { join } from 'path';
 
 import { Config } from '@/lib/config';
 
-const cwd = process.cwd();
+// const cwd = process.cwd();
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     if (file && typeof file !== 'string') {
       const ab = await file.arrayBuffer();
       const bf = Buffer.from(ab);
-      filepath = path.join(cwd, '/', file.name) + Date.now();
+      filepath = join('/', 'tmp', file.name) + Date.now();
       console.log(filepath);
       await fs.promises.writeFile(filepath, bf, {
         encoding: 'binary',
