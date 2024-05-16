@@ -9,7 +9,7 @@ import FormData from 'form-data';
 
 import { Config } from '@/lib/config';
 
-export async function uploadProfilePic(file: File, publicId: string) {
+async function uploadProfilePic(file: File, publicId: string) {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   // const res = await cloudinary.uploader
