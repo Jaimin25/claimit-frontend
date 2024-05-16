@@ -6,7 +6,6 @@ import {
   v2 as cloudinary,
 } from 'cloudinary';
 import FormData from 'form-data';
-import { env } from 'process';
 
 import { Config } from '@/lib/config';
 
@@ -27,9 +26,9 @@ async function uploadProfilePic(file: File, publicId: string) {
     message: UploadApiResponse | UploadApiErrorResponse | undefined;
   }>((resolve, reject) => {
     cloudinary.config({
-      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
-      api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-      api_secret: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
+      cloud_name: Config.CLOUDINARY_NAME,
+      api_key: Config.CLOUDINARY_API_KEY,
+      api_secret: Config.CLOUDINARY_API_SECRET,
     });
     cloudinary.uploader
       .upload_stream(
@@ -56,12 +55,6 @@ async function uploadProfilePic(file: File, publicId: string) {
 }
 
 export async function POST(req: NextRequest) {
-  console.log(
-    process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
-    process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-    process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET
-  );
-  console.log(env.NEXT_PUBLIC_CLOUDINARY_NAME);
   const formData = await req.formData();
   const profileImgFile = formData.get('profileImgFile') as File;
 
