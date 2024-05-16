@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import FormData from 'form-data';
-import fs from 'fs';
-import { join } from 'path';
 
 import { Config } from '@/lib/config';
 
@@ -10,23 +8,36 @@ import { Config } from '@/lib/config';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
-  const file = formData.get('file') as File;
+  const imgFileBase64 = formData.get('profileImgFileBase64') as File;
 
   try {
     const newFd = new FormData();
     newFd.append('document', formData.get('document') as string);
-    let filepath;
-    if (file && typeof file !== 'string') {
-      const ab = await file.arrayBuffer();
-      const bf = Buffer.from(ab);
-      filepath = join('/', 'tmp', file.name) + Date.now();
-      console.log(filepath);
-      await fs.promises.writeFile(filepath, bf, {
-        encoding: 'binary',
-      });
 
-      newFd.append('file', fs.createReadStream(filepath));
+    if (imgFileBase64 && typeof imgFileBase64 === 'string') {
+      newFd.append(
+        'profileImgFileBase64',
+        formData.get('profileImgFileBase64') as string
+      );
     }
+    // let filepath;
+    // if (file && typeof file !== 'string') {
+    //   const uploadImage = await axios.post(
+    //     `https://upload.imagekit.io/api/v1/files/upload`,
+    //     formData
+    //   );
+
+    //   console.log(uploadImage);
+    //   const ab = await file.arrayBuffer();
+    //   const bf = Buffer.from(ab);
+    //   filepath = join('/', 'tmp', file.name) + Date.now();
+    //   console.log(filepath);
+    //   await fs.promises.writeFile(filepath, bf, {
+    //     encoding: 'binary',
+    //   });
+
+    //   newFd.append('file', fs.createReadStream(filepath));
+    // }
 
     const res = await axios.post(
       `${Config.API_URL}/user/updateUserData`,
@@ -42,9 +53,9 @@ export async function POST(req: NextRequest) {
 
     const resData = await res.data;
 
-    if (resData && filepath && fs.existsSync(filepath)) {
-      fs.unlinkSync(filepath);
-    }
+    // if (resData && filepath && fs.existsSync(filepath)) {
+    //   fs.unlinkSync(filepath);
+    // }
     return NextResponse.json(resData);
   } catch (error) {
     console.log(error);

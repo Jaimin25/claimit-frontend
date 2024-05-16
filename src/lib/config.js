@@ -3,7 +3,7 @@ export const Config = {
   APP_URL:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000'
-      : 'https://claimit-frontend.onrender.com',
+      : 'https://claimit.vercel.app',
   API_URL:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:8000/api/v1'

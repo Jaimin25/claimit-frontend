@@ -181,7 +181,7 @@ export default function AccountDetailsForm() {
       toast.error(`${error.name}: ${error.message}`, { id: toastId }),
   });
 
-  const onSubmit = (values: z.infer<typeof accountDetailsFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof accountDetailsFormSchema>) => {
     values.profilepicfile = values.profilepicfile[0] as File;
     const formData = new FormData();
 
@@ -201,7 +201,8 @@ export default function AccountDetailsForm() {
     const json = JSON.stringify(changedFields);
 
     if (values.profilepicfile) {
-      formData.append('file', values.profilepicfile);
+      const dataa = await toBase64(values.profilepicfile);
+      formData.append('profileImgFileBase64', dataa as string);
     }
     formData.append('document', json);
 
@@ -209,6 +210,22 @@ export default function AccountDetailsForm() {
 
     const currentToastId = toast.loading('Updating profile...');
     setToastId(currentToastId);
+  };
+
+  const toBase64 = (file: File) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
 
   useEffect(() => {
