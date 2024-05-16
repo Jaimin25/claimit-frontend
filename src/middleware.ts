@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
 
 async function checkAuthentication(request: NextRequest): Promise<boolean> {
   try {
-    const res = await fetch(`${Config.APP_URL}/api/authUser`, {
+    const res = await fetch(`${Config.APP_URL}/api/auth/authUser`, {
       credentials: 'include',
       headers: {
         cookie: `session=${request.cookies.get('session')?.value}`,

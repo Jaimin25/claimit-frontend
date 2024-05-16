@@ -38,7 +38,7 @@ const signInFormSchema = z.object({
 });
 
 async function signInSubmit(values: z.infer<typeof signInFormSchema>) {
-  return await axios.post(`${Config.APP_URL}/api/signin`, {
+  return await axios.post(`${Config.APP_URL}/api/auth/signin`, {
     emailOrPhone: values.emailOrPhone,
     password: values.password,
   });

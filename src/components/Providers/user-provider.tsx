@@ -63,7 +63,7 @@ const fetchUserFn = async () => {
 };
 
 const checkAuthentication = async () => {
-  return await axios.post(`${Config.APP_URL}/api/authUser`, '', {
+  return await axios.post(`${Config.APP_URL}/api/auth/authUser`, '', {
     withCredentials: true,
   });
 };

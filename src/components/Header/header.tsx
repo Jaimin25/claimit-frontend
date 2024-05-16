@@ -25,7 +25,7 @@ import { useUser } from '../Providers/user-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const signOutUser = async () => {
-  return await axios.post(`${Config.APP_URL}/api/signout`);
+  return await axios.post(`${Config.APP_URL}/api/auth/signout`);
 };
 
 export default function Header() {

@@ -100,9 +100,13 @@ const accountDetailsFormSchema = z.object({
 });
 
 const sendVerificationMail = async () => {
-  return await axios.post(`${Config.API_URL}/resendVerificationMail`, '', {
-    withCredentials: true,
-  });
+  return await axios.post(
+    `${Config.APP_URL}/api/auth/resendVerificationMail`,
+    '',
+    {
+      withCredentials: true,
+    }
+  );
 };
 
 const sendUpdateUserData = async (values: FormData) => {

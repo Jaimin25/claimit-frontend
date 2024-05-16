@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   if (file && typeof file !== 'string') {
     const ab = await file.arrayBuffer();
     const bf = Buffer.from(ab);
-    filepath = path.join(cwd, 'upload', file.name) + Date.now();
+    filepath = path.join(cwd, '.temp/upload', file.name) + Date.now();
     await fs.promises.writeFile(filepath, bf, {
       encoding: 'binary',
     });
