@@ -6,8 +6,8 @@ import {
   v2 as cloudinary,
 } from 'cloudinary';
 import FormData from 'form-data';
-import { env } from 'process';
 
+import { env } from '@/env';
 import { Config } from '@/lib/config';
 
 async function uploadProfilePic(file: File, publicId: string) {
