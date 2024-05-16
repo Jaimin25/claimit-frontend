@@ -167,7 +167,9 @@ export default function AccountDetailsForm() {
       const data = await res.data;
 
       if (data.statusCode === 200) {
-        toast.success(data.statusMessage, { id: toastId });
+        toast.success(data.statusMessage, {
+          id: toastId,
+        });
         updateUserData(data.userData[0]);
         setPreview(user?.profilePicUrl as string);
 
@@ -201,8 +203,7 @@ export default function AccountDetailsForm() {
     const json = JSON.stringify(changedFields);
 
     if (values.profilepicfile) {
-      const dataa = await toBase64(values.profilepicfile);
-      formData.append('profileImgFileBase64', dataa as string);
+      formData.append('profileImgFile', values.profilepicfile);
     }
     formData.append('document', json);
 
@@ -210,22 +211,6 @@ export default function AccountDetailsForm() {
 
     const currentToastId = toast.loading('Updating profile...');
     setToastId(currentToastId);
-  };
-
-  const toBase64 = (file: File) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-
-      fileReader.readAsDataURL(file);
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
   };
 
   useEffect(() => {
