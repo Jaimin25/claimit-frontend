@@ -6,6 +6,7 @@ import {
   v2 as cloudinary,
 } from 'cloudinary';
 import FormData from 'form-data';
+import { env } from 'process';
 
 import { Config } from '@/lib/config';
 
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
     process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
     process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET
   );
+  console.log(env.NEXT_PUBLIC_CLOUDINARY_NAME);
   const formData = await req.formData();
   const profileImgFile = formData.get('profileImgFile') as File;
 
