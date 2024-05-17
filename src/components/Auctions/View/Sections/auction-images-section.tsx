@@ -42,7 +42,7 @@ export default function AuctionImagesSection({
                       src={url}
                       width={250}
                       alt={url}
-                      className="h-full w-full object-cover hover:cursor-pointer"
+                      className="h-full w-full rounded-md object-cover hover:cursor-pointer"
                       height={100}
                       onClick={() => {
                         setImgUrl(url);
