@@ -7,26 +7,17 @@ import { LuImageOff } from 'react-icons/lu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { getAuctionEndTime } from '@/lib/utils';
 
 export default function AuctionCards() {
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [endTime, setEndTime] = useState('nill');
 
   const deadline = 'June 1, 2024';
 
-  const getTime = (deadline: string) => {
-    const time = Date.parse(deadline) - Date.now();
-
-    setDays(Math.floor(time / (1000 * 60 * 60 * 24)));
-    setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
-    setMinutes(Math.floor((time / 1000 / 60) % 60));
-    setSeconds(Math.floor((time / 1000) % 60));
-  };
-
   useEffect(() => {
-    const interval = setInterval(() => getTime(deadline), 1000);
+    const interval = setInterval(() => {
+      setEndTime(getAuctionEndTime(deadline));
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -61,9 +52,7 @@ export default function AuctionCards() {
             </div>
             <div className="flex items-center gap-2">
               <FaClock size={20} className="fill-blue-500" />
-              <p>
-                {days}d {hours}h {minutes}m {seconds}s
-              </p>
+              <p>{endTime}</p>
             </div>
           </div>
         </div>

@@ -7,30 +7,22 @@ import { HiUsers } from 'react-icons/hi';
 import AuctionClaimSkeletonSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-claim-section-skele';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { getAuctionEndTime } from '@/lib/utils';
 
 export default function AuctionClaimSection({
   isLoading,
 }: {
   isLoading: boolean;
 }) {
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [endTime, setEndTime] = useState('nill');
 
   const deadline = 'June 1, 2024';
 
-  const getTime = (deadline: string) => {
-    const time = Date.parse(deadline) - Date.now();
-
-    setDays(Math.floor(time / (1000 * 60 * 60 * 24)));
-    setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
-    setMinutes(Math.floor((time / 1000 / 60) % 60));
-    setSeconds(Math.floor((time / 1000) % 60));
-  };
-
   useEffect(() => {
-    const interval = setInterval(() => getTime(deadline), 1000);
+    const interval = setInterval(
+      () => setEndTime(getAuctionEndTime(deadline).replace('(Until ends)', '')),
+      1000
+    );
 
     return () => clearInterval(interval);
   }, []);
@@ -51,10 +43,7 @@ export default function AuctionClaimSection({
             <div>
               <p className="font-semibold">Time running out!</p>
               <div className="flex items-center gap-2">
-                <FaClock />{' '}
-                <p>
-                  {days}d {hours}h {minutes}m {seconds}s
-                </p>
+                <FaClock /> <p>{endTime}</p>
               </div>
             </div>
             <div>
