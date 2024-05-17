@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Image from 'next/image';
 
+import ImageViewer from '@/components/Modal/image-viewer';
 import AuctionImagesSectionSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-images-section-skele';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -10,7 +11,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const images = [
   'https://geauction.com/wp-content/uploads/2018/07/5-Auction-Tips-for-Beginners2.jpg',
@@ -37,7 +37,7 @@ export default function AuctionImagesSection({
             <CarouselItem key={index}>
               <div className="p-1">
                 <Card className="w-full">
-                  <CardContent className="flex aspect-square items-center justify-center p-6 md:aspect-video">
+                  <CardContent className="flex aspect-square items-center justify-center p-0 md:aspect-video">
                     <Image
                       src={url}
                       width={250}
@@ -58,17 +58,7 @@ export default function AuctionImagesSection({
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-      <Dialog onOpenChange={setOpenChange} open={open}>
-        <DialogContent className="border-none p-0">
-          <Image
-            src={imgUrl}
-            width={250}
-            alt={imgUrl}
-            className="h-full w-full"
-            height={100}
-          />
-        </DialogContent>
-      </Dialog>
+      <ImageViewer open={open} imgUrl={imgUrl} setOpenChange={setOpenChange} />
     </div>
   );
 }

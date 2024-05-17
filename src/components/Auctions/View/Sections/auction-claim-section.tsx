@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaClock } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 
@@ -18,7 +18,7 @@ export default function AuctionClaimSection({
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  const deadline = 'May, 30, 2024';
+  const deadline = 'June 1, 2024';
 
   const getTime = (deadline: string) => {
     const time = Date.parse(deadline) - Date.now();
