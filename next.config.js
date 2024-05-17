@@ -7,6 +7,7 @@
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -15,6 +16,10 @@ const config = {
       {
         protocol: 'https',
         hostname: 'www.shutterstock.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'res.cloudinary.com',
       },
     ],
   },
