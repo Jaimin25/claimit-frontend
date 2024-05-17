@@ -1,32 +1,24 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { FaClock, FaWallet } from 'react-icons/fa';
-import { FaGavel } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaClock, FaGavel, FaWallet } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 import { LuImageOff } from 'react-icons/lu';
+
+import { getAuctionEndTime } from '@/lib/utils';
 
 import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 
 export default function DashboardAuctionCard() {
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [endTime, setEndTime] = useState('nill');
 
-  const deadline = 'May, 15, 2024';
-
-  const getTime = (deadline: string) => {
-    const time = Date.parse(deadline) - Date.now();
-
-    setDays(Math.floor(time / (1000 * 60 * 60 * 24)));
-    setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
-    setMinutes(Math.floor((time / 1000 / 60) % 60));
-    setSeconds(Math.floor((time / 1000) % 60));
-  };
+  const deadline = 'June 1, 2024';
 
   useEffect(() => {
-    const interval = setInterval(() => getTime(deadline), 1000);
+    const interval = setInterval(
+      () => setEndTime(getAuctionEndTime(deadline)),
+      1000
+    );
 
     return () => clearInterval(interval);
   }, []);
@@ -34,9 +26,9 @@ export default function DashboardAuctionCard() {
   return (
     <div>
       <Card>
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col lg:flex-row">
           <div>
-            <div className="flex h-36 w-full items-center justify-center bg-gray-200 md:h-full md:w-36">
+            <div className="flex h-52 w-full items-center justify-center rounded-tl-md rounded-tr-md bg-gray-200 lg:h-full lg:w-44 lg:rounded-bl-md lg:rounded-tr-none">
               <LuImageOff size={24} />
             </div>
           </div>
@@ -45,7 +37,7 @@ export default function DashboardAuctionCard() {
               <p className="text-2xl font-semibold">Title</p>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-2 lg:grid-cols-1">
                 <div className="flex items-center gap-2">
                   <FaGavel size={20} className="fill-emerald-500" />
                   ₹1000 (Bid price)
@@ -60,9 +52,7 @@ export default function DashboardAuctionCard() {
                 </div>
                 <div className="flex items-center gap-2">
                   <FaClock size={20} className="fill-blue-500" />
-                  <p>
-                    {days}d {hours}h {minutes}m {seconds}s
-                  </p>
+                  <p>{endTime}</p>
                 </div>
               </div>
             </CardContent>
