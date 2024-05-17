@@ -14,7 +14,7 @@ export default function AuctionCards() {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  const deadline = 'May, 30, 2024';
+  const deadline = 'May, 15, 2024';
 
   const getTime = (deadline: string) => {
     const time = Date.parse(deadline) - Date.now();
