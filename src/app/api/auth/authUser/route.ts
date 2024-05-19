@@ -13,6 +13,6 @@ export async function POST(req: NextRequest) {
   });
 
   const resData = await res.data;
-  console.log(resData);
+
   return NextResponse.json(resData);
 }
