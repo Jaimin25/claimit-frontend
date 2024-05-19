@@ -12,15 +12,17 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 
-const images = [
-  'https://geauction.com/wp-content/uploads/2018/07/5-Auction-Tips-for-Beginners2.jpg',
-  'https://www.shutterstock.com/image-vector/hands-holding-auction-paddles-vector-600nw-204944743.jpg',
-];
+// const images = [
+//   'https://geauction.com/wp-content/uploads/2018/07/5-Auction-Tips-for-Beginners2.jpg',
+//   'https://www.shutterstock.com/image-vector/hands-holding-auction-paddles-vector-600nw-204944743.jpg',
+// ];
 
 export default function AuctionImagesSection({
   isLoading,
+  images,
 }: {
   isLoading: boolean;
+  images: string[];
 }) {
   const [open, setOpenChange] = React.useState(false);
   const [imgUrl, setImgUrl] = React.useState('');
@@ -48,6 +50,8 @@ export default function AuctionImagesSection({
                         setImgUrl(url);
                         setOpenChange(true);
                       }}
+                      loading="lazy"
+                      unoptimized
                     />
                   </CardContent>
                 </Card>
