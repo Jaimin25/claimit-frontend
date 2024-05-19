@@ -16,13 +16,14 @@ export async function POST(req: NextRequest) {
 
   if (resData.statusCode === 200) {
     const cookie = res.headers['set-cookie'];
+    console.log(cookie);
     const [, secondCookie] = cookie!;
 
     // Extract the actual cookie value (session data) from the string:
     const sessionData = secondCookie?.split('=')[1]?.split(';')[0]; // Assuming the format is "session=data"
 
     const store = cookies();
-    store.set('session', `${sessionData}`);
+    store.set('session', `${sessionData}`, { maxAge: 60 * 60 * 24 * 30 });
 
     return NextResponse.json(resData);
   } else {
