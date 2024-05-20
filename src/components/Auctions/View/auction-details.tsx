@@ -16,7 +16,7 @@ import AuctionDetailsSection from './Sections/auction-details-section';
 import AuctionImagesSection from './Sections/auction-images-section';
 import AuctionOwnerSection from './Sections/auction-owner-section';
 
-interface AuctionDetailsProps {
+export interface AuctionDetailsProps {
   id: string;
   title: string;
   description: string;
@@ -52,7 +52,7 @@ interface AuctionDetailsProps {
 }
 
 const fetchAuctionDetails = async (auctionId: string) => {
-  return await axios.get(`${Config.APP_URL}/api/auction/getAuctionById`, {
+  return await axios.get(`${Config.API_URL}/auction/getAuctionById`, {
     params: {
       auctionId: auctionId,
     },
