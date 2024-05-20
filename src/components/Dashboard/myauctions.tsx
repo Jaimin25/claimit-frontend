@@ -8,6 +8,7 @@ import { Config } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
 
 import DashboardAuctionCard from '../Cards/dashboard-auction-card';
+import DashAuctionCardsSkele from '../Skeletons/dash-auction-cards-skeleton';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Input } from '../ui/input';
 
@@ -67,9 +68,15 @@ export default function MyAuctions() {
             <Input placeholder="Search auctions..." />
           </div>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {userAuctions?.map((item, i) => (
-              <DashboardAuctionCard key={i} auction={item} />
-            ))}
+            {!fetchUserAuctionsMutation.isPending &&
+            userAuctions &&
+            userAuctions.length >= 1
+              ? userAuctions?.map((item, i) => (
+                  <DashboardAuctionCard key={i} auction={item} />
+                ))
+              : Array(4)
+                  .fill(0)
+                  .map((_, i) => <DashAuctionCardsSkele key={i} />)}
           </div>
         </CardContent>
       </Card>
