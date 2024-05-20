@@ -8,6 +8,7 @@ import { HiUsers } from 'react-icons/hi';
 import { getAuctionEndTime } from '@/lib/utils';
 
 import { UserAuctionsProps } from '../Dashboard/myauctions';
+import ImageViewer from '../Modal/image-viewer';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 
@@ -16,6 +17,8 @@ export default function DashboardAuctionCard({
 }: {
   auction: UserAuctionsProps;
 }) {
+  const [onOpen, setOnOpen] = useState(false);
+  const [imgUrl, setImgUrl] = useState('');
   const [endTime, setEndTime] = useState('--:--:--');
 
   useEffect(() => {
@@ -41,6 +44,10 @@ export default function DashboardAuctionCard({
                 src={auction.imagesUrl[0]!}
                 alt="img1"
                 className="h-full w-full rounded-tl-md  rounded-tr-md object-cover lg:rounded-bl-md lg:rounded-tr-none"
+                onClick={() => {
+                  setOnOpen(true);
+                  setImgUrl(auction.imagesUrl[0]!);
+                }}
               />
             </div>
           </div>
@@ -81,6 +88,7 @@ export default function DashboardAuctionCard({
           </div>
         </div>
       </Card>
+      <ImageViewer open={onOpen} setOpenChange={setOnOpen} imgUrl={imgUrl} />
     </div>
   );
 }
