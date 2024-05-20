@@ -200,6 +200,10 @@ export default function CreateAuctionForm() {
 
   const [open, setIsOpen] = useState(false);
 
+  const [ruleOpen, setIsRuleOpen] = useState(false);
+
+  const [auctionId, setAuctionId] = useState('');
+
   const createAuctionForm = useForm<z.infer<typeof createAuctionFormSchema>>({
     resolver: zodResolver(createAuctionFormSchema),
   });
@@ -219,6 +223,7 @@ export default function CreateAuctionForm() {
         setPreview4('');
         toast.success(data.statusMessage, { id: toastId });
         // createAuctionForm.reset();
+        setAuctionId(data.auctionId);
         setIsOpen(true);
       } else {
         toast.error(data.statusMessage, { id: toastId });
@@ -956,9 +961,10 @@ export default function CreateAuctionForm() {
                 </div>
                 <div>
                   <Button
-                    type="submit"
+                    type="button"
                     className="w-full"
                     disabled={!isChecked || createAuctionMutation.isPending}
+                    onClick={() => setIsRuleOpen(true)}
                   >
                     Create
                   </Button>
@@ -968,6 +974,29 @@ export default function CreateAuctionForm() {
           </CardContent>
         </Card>
       </div>
+      <Dialog open={ruleOpen} onOpenChange={setIsRuleOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>ℹ️ Basic information</DialogTitle>
+            <DialogDescription>
+              The auction can only be edited till the time there are no bids
+              made on it.
+            </DialogDescription>
+            <DialogFooter className="gap-2 *:w-full">
+              <Button variant={'outline'}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  setIsRuleOpen(false);
+                  onSubmit(createAuctionForm.getValues());
+                }}
+                variant={'default'}
+              >
+                Agree & Create
+              </Button>
+            </DialogFooter>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
       <Dialog open={open} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
@@ -975,10 +1004,14 @@ export default function CreateAuctionForm() {
             <DialogDescription>
               You auction has been successfully created!
             </DialogDescription>
-            <DialogFooter>
-              <Button variant={'secondary'}>Manage</Button>
-              <Link href={`/auctions/view/id`}>
-                <Button variant={'default'}>View</Button>
+            <DialogFooter className="gap-2">
+              <Button variant={'outline'} className="w-full">
+                Manage
+              </Button>
+              <Link href={`/auctions/view/${auctionId}`} className="w-full">
+                <Button variant={'default'} className="w-full">
+                  View
+                </Button>
               </Link>
             </DialogFooter>
           </DialogHeader>
