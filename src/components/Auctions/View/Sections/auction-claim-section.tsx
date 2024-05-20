@@ -11,21 +11,32 @@ import { getAuctionEndTime } from '@/lib/utils';
 
 export default function AuctionClaimSection({
   isLoading,
+  bidders,
+  buyPrice,
+  auctionStatus,
+  deadline,
+  title,
 }: {
   isLoading: boolean;
+  bidders: number;
+  buyPrice: string;
+  auctionStatus: string;
+  deadline: string;
+  title: string;
 }) {
-  const [endTime, setEndTime] = useState('nill');
-
-  const deadline = 'June 1, 2024';
+  const [endTime, setEndTime] = useState('--:--:--');
 
   useEffect(() => {
-    const interval = setInterval(
-      () => setEndTime(getAuctionEndTime(deadline).replace('(Until ends)', '')),
-      1000
-    );
+    if (deadline && auctionStatus === 'ACTIVE') {
+      const interval = setInterval(() => {
+        setEndTime(
+          getAuctionEndTime(deadline.toString()).replace('(Until ends)', '')
+        );
+      }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }
+  }, [deadline, auctionStatus]);
 
   if (isLoading) {
     return <AuctionClaimSkeletonSkele />;
@@ -35,8 +46,13 @@ export default function AuctionClaimSection({
     <div className="w-full">
       <Card className="w-full">
         <CardHeader>
-          <Button variant={'outline'}>Bid</Button>
-          <Button variant={'default'}>Buy ₹2000</Button>
+          <h2 className="text-2xl font-semibold">{title}</h2>
+          <Button variant={'outline'} disabled={auctionStatus !== 'ACTIVE'}>
+            Bid
+          </Button>
+          <Button variant={'default'} disabled={auctionStatus !== 'ACTIVE'}>
+            Buy {auctionStatus === 'SOLD' ? '(SOLD)' : `(₹${buyPrice})`}
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -47,9 +63,15 @@ export default function AuctionClaimSection({
               </div>
             </div>
             <div>
-              <p className="font-semibold">You are not alone!</p>
+              <p className="font-semibold">
+                {auctionStatus !== 'ACTIVE'
+                  ? 'Finished'
+                  : bidders === 0
+                    ? 'Start bidding!'
+                    : 'You are not alone!'}
+              </p>
               <div className="flex items-center gap-2">
-                <HiUsers /> <p>10</p>
+                <HiUsers /> <p>{auctionStatus !== 'ACTIVE' ? '--' : bidders}</p>
               </div>
             </div>
           </div>

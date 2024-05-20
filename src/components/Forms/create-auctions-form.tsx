@@ -317,7 +317,11 @@ export default function CreateAuctionForm() {
                         Description <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Textarea placeholder="description" {...field} />
+                        <Textarea
+                          placeholder="description"
+                          className="whitespace-pre-wrap"
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
                         Provide a description with every possible details of

@@ -32,11 +32,11 @@ export default function AuctionImagesSection({
   }
 
   return (
-    <div className="flex w-full justify-center">
+    <div className="flex w-full items-center justify-center">
       <Carousel className="w-full max-w-64 sm:max-w-lg lg:max-w-3xl">
-        <CarouselContent className="w-full">
+        <CarouselContent className="ml-0 w-full">
           {images.map((url, index) => (
-            <CarouselItem key={index}>
+            <CarouselItem key={index} className="p-0">
               <div className="p-1">
                 <Card className="w-full">
                   <CardContent className="flex aspect-square items-center justify-center p-0 md:aspect-video">
