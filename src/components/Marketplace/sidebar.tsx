@@ -3,7 +3,9 @@
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
-import { Card, CardContent, CardHeader } from '../ui/card';
+import { useMarketplaceAuction } from '../Providers/marketplace-auctions-provider';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { Input } from '../ui/input';
 
 import FilterCombobox from './filter-combobox';
@@ -27,6 +29,10 @@ const categories = [
 ] as const;
 
 export default function Sidebar() {
+  const { setFilterValue, loading } = useMarketplaceAuction();
+
+  const [searchInput, setSearchInput] = useState('');
+
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = React.useState('');
 
@@ -46,7 +52,11 @@ export default function Sidebar() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <FaSearch />
-              <Input placeholder="Search auctions..." />
+              <Input
+                placeholder="Search auctions..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
             </div>
             <div className="grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-1">
               <div className="space-y-2">
@@ -91,6 +101,21 @@ export default function Sidebar() {
             </div>
           </div>
         </CardContent>
+        <CardFooter>
+          <Button
+            onClick={() => {
+              setFilterValue({
+                searchInput: searchInput,
+                category: selectedCategory,
+                sortTypeAuction: selectedSortAuction,
+                sortTypePrice: selectedSortPrice,
+              });
+            }}
+            disabled={loading}
+          >
+            Search
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   );
