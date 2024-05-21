@@ -18,7 +18,7 @@ import {
 import { Config } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
 
-interface AuctionDetailsProps {
+export interface AuctionDetailsProps {
   id: string;
   title: string;
   description: string;

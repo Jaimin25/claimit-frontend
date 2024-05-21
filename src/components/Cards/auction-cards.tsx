@@ -16,7 +16,7 @@ export default function AuctionCards({
 }: {
   auction: AuctionDetailsProps;
 }) {
-  const [endTime, setEndTime] = useState('nill');
+  const [endTime, setEndTime] = useState('--:--:--');
 
   useEffect(() => {
     const interval = setInterval(() => {
