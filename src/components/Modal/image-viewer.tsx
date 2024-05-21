@@ -21,6 +21,7 @@ export default function ImageViewer({
           alt={imgUrl}
           className="h-full w-full"
           height={100}
+          loading={'lazy'}
           unoptimized
         />
       </DialogContent>

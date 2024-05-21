@@ -4,11 +4,22 @@ import AuctionBidderSectionSkele from '@/components/Skeletons/AuctionDetailsSkel
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { timeSince } from '@/lib/utils';
 
 export default function AuctionBiddersSection({
   isLoading,
+  bids,
 }: {
   isLoading: boolean;
+  bids: {
+    id: number;
+    amount: string;
+    createdAt: Date;
+    user: {
+      username: string;
+      profilePicUrl: string;
+    };
+  }[];
 }) {
   if (isLoading) {
     return <AuctionBidderSectionSkele />;
@@ -22,25 +33,28 @@ export default function AuctionBiddersSection({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {Array(5)
-              .fill(0)
-              .map((_, i) => (
-                <div className="flex items-center gap-2" key={i}>
-                  <div>
-                    <Avatar>
-                      <AvatarImage src={'https://github.com/jaimin25.png'} />
-                      <AvatarFallback>CJ</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div className="flex flex-col">
-                    <p className="text-lg font-semibold">Username</p>
-                    <div className="flex gap-2">
-                      <p>₹1200</p> • <p>1 min ago</p>
+            {bids.length >= 1
+              ? bids.map((item) => (
+                  <div className="flex items-center gap-2" key={item.id}>
+                    <div>
+                      <Avatar>
+                        <AvatarImage src={item.user.profilePicUrl} />
+                        <AvatarFallback>CJ</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-lg font-semibold">
+                        {item.user.username}
+                      </p>
+                      <div className="flex gap-2">
+                        <p>₹{item.amount}</p> •{' '}
+                        <p>{timeSince(item.createdAt)}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            <Button variant={'outline'}>View More</Button>
+                ))
+              : 'No Bidders!'}
+            {bids.length > 5 && <Button variant={'outline'}>View More</Button>}
           </div>
         </CardContent>
       </Card>

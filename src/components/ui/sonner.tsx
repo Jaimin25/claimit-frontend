@@ -11,7 +11,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={theme as ToasterProps['theme']}
-      className="toaster group"
+      className="toaster group mt-12 md:mt-8"
       toastOptions={{
         classNames: {
           toast:
@@ -25,6 +25,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }}
       {...props}
       duration={2000}
+      position="top-center"
     />
   );
 };

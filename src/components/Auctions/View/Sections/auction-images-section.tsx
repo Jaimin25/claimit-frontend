@@ -12,15 +12,17 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 
-const images = [
-  'https://geauction.com/wp-content/uploads/2018/07/5-Auction-Tips-for-Beginners2.jpg',
-  'https://www.shutterstock.com/image-vector/hands-holding-auction-paddles-vector-600nw-204944743.jpg',
-];
+// const images = [
+//   'https://geauction.com/wp-content/uploads/2018/07/5-Auction-Tips-for-Beginners2.jpg',
+//   'https://www.shutterstock.com/image-vector/hands-holding-auction-paddles-vector-600nw-204944743.jpg',
+// ];
 
 export default function AuctionImagesSection({
   isLoading,
+  images,
 }: {
   isLoading: boolean;
+  images: string[];
 }) {
   const [open, setOpenChange] = React.useState(false);
   const [imgUrl, setImgUrl] = React.useState('');
@@ -30,11 +32,11 @@ export default function AuctionImagesSection({
   }
 
   return (
-    <div className="flex w-full justify-center">
+    <div className="flex w-full items-center justify-center">
       <Carousel className="w-full max-w-64 sm:max-w-lg lg:max-w-3xl">
-        <CarouselContent className="w-full">
+        <CarouselContent className="ml-0 w-full">
           {images.map((url, index) => (
-            <CarouselItem key={index}>
+            <CarouselItem key={index} className="p-0">
               <div className="p-1">
                 <Card className="w-full">
                   <CardContent className="flex aspect-square items-center justify-center p-0 md:aspect-video">
@@ -48,6 +50,7 @@ export default function AuctionImagesSection({
                         setImgUrl(url);
                         setOpenChange(true);
                       }}
+                      loading="lazy"
                     />
                   </CardContent>
                 </Card>
