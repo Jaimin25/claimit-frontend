@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
   if (resData.statusCode === 200) {
     const cookie = res.headers['set-cookie'];
-    console.log(cookie);
+
     const [, secondCookie] = cookie!;
 
     // Extract the actual cookie value (session data) from the string:

@@ -18,7 +18,7 @@ import {
 import { Config } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
 
-export interface AuctionDetailsProps {
+interface AuctionDetailsProps {
   id: string;
   title: string;
   description: string;
@@ -51,6 +51,7 @@ export default function Marketplace() {
     mutationFn: fetchMarketplaceAuctions,
     onSuccess: async (res) => {
       const data = await res.data;
+
       if (data.statusCode === 200) {
         setAuctions(data.allAuctions);
       }
