@@ -44,6 +44,8 @@ export default function FeatureSection() {
 
       if (data.statusCode === 200) {
         setFeaturedAuctions(data.featuredAuctions);
+      } else {
+        setFeaturedAuctions([]);
       }
     },
     onError: (error) => toast.error(`${error.name}: ${error.message}`),
@@ -60,9 +62,11 @@ export default function FeatureSection() {
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {!featuredAuctions || fetchFeaturedAuctionsMutation.isPending
           ? new Array(6).fill(0).map((_, i) => <AuctionCardsSkeleton key={i} />)
-          : featuredAuctions.map((item, i) => (
-              <AuctionCards key={i} auction={item} />
-            ))}
+          : featuredAuctions.length >= 1
+            ? featuredAuctions.map((item, i) => (
+                <AuctionCards key={i} auction={item} />
+              ))
+            : 'No auctions found!'}
       </div>
       <div className="flex w-full justify-center">
         <Link href={'/marketplace'}>
