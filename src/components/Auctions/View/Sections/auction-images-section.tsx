@@ -51,7 +51,6 @@ export default function AuctionImagesSection({
                         setOpenChange(true);
                       }}
                       loading="lazy"
-                      unoptimized
                     />
                   </CardContent>
                 </Card>

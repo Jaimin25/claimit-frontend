@@ -52,7 +52,7 @@ export interface AuctionDetailsProps {
 }
 
 const fetchAuctionDetails = async (auctionId: string) => {
-  return await axios.get(`${Config.API_URL}/auction/getAuctionById`, {
+  return await axios.get(`${Config.APP_URL}/api/auction/getAuctionById`, {
     params: {
       auctionId: auctionId,
     },

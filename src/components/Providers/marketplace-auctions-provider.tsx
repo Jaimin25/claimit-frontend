@@ -52,7 +52,7 @@ export const useMarketplaceAuction = () => {
 
 const fetchMarketplaceAuctions = async () => {
   return await axios.get(
-    `${Config.API_URL}/marketplace/fetchAllMarketplaceAuctions`
+    `${Config.APP_URL}/api/marketplace/fetchMarketplaceAuctions`
   );
 };
 
