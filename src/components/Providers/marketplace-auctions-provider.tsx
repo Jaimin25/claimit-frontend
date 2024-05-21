@@ -27,15 +27,17 @@ export interface AuctionDetailsProps {
   }[];
 }
 
+interface FilterProps {
+  searchInput: string;
+  category: string;
+  sortTypeAuction: string;
+  sortTypePrice: string;
+}
+
 interface MarketplaceAuctionContextProps {
   auctions: AuctionDetailsProps[] | null;
   loading: boolean;
-  setFilterValue: (value: {
-    searchInput: string;
-    category: string;
-    sortTypeAuction: string;
-    sortTypePrice: string;
-  }) => void;
+  setFilterValue: (value: FilterProps) => void;
 }
 
 const MarketplaceAuctionContext = createContext<MarketplaceAuctionContextProps>(
@@ -56,12 +58,25 @@ const fetchMarketplaceAuctions = async () => {
   );
 };
 
+const filterMarketplaceAuctions = async (value: FilterProps) => {
+  return await axios.get(
+    `${Config.APP_URL}/api/marketplace/filterMarketplaceAuctions`,
+    {
+      params: value,
+    }
+  );
+};
+
 export function MarketplaceAuctionsProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [auctions, setAuctions] = useState<AuctionDetailsProps[] | null>(null);
+  const [tempAuctions, setTempAuctions] = useState<
+    AuctionDetailsProps[] | null
+  >();
+
   const fetchAllMarketplaceAuctionsMutation = useMutation({
     mutationFn: fetchMarketplaceAuctions,
     onSuccess: async (res) => {
@@ -74,18 +89,39 @@ export function MarketplaceAuctionsProvider({
     onError: (error) => toast.error(`${error.name}: ${error.message}`),
   });
 
+  const filterMarketplaceAuctionMutation = useMutation({
+    mutationFn: filterMarketplaceAuctions,
+    onSuccess: async (res) => {
+      const data = await res.data;
+      setTempAuctions(tempAuctions ? tempAuctions : auctions);
+      if (data.statusCode === 200) {
+        setAuctions(data.filteredAuctions);
+      } else {
+        setAuctions([]);
+      }
+    },
+    onError: (error) => toast.error(`${error.name}: ${error.message}`),
+  });
+
   useEffect(() => {
     fetchAllMarketplaceAuctionsMutation.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setFilterValue = (value: {
-    searchInput: string;
-    category: string;
-    sortTypeAuction: string;
-    sortTypePrice: string;
-  }) => {
+  const setFilterValue = (value: FilterProps) => {
     console.log(value);
+    if (
+      !value.searchInput &&
+      !value.category &&
+      !value.sortTypeAuction &&
+      !value.sortTypePrice
+    ) {
+      if (tempAuctions) {
+        setAuctions(tempAuctions);
+      }
+      return;
+    }
+    filterMarketplaceAuctionMutation.mutate(value);
   };
 
   return (
@@ -93,7 +129,9 @@ export function MarketplaceAuctionsProvider({
       value={{
         auctions,
         loading:
-          fetchAllMarketplaceAuctionsMutation.isPending || auctions === null,
+          fetchAllMarketplaceAuctionsMutation.isPending ||
+          auctions === null ||
+          filterMarketplaceAuctionMutation.isPending,
         setFilterValue,
       }}
     >

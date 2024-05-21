@@ -12,7 +12,7 @@ import FilterCombobox from './filter-combobox';
 
 const sort_by_auctions = [
   { value: 'new-bids', label: 'New' },
-  { value: 'most-bids', label: 'Most Bids' },
+  // { value: 'most-bids', label: 'Most Bids' },
   { value: 'ending-soon', label: 'Ending Soon' },
 ];
 
@@ -101,7 +101,30 @@ export default function Sidebar() {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="gap-2">
+          {(searchInput ||
+            selectedCategory ||
+            selectedSortAuction ||
+            selectedSortPrice) && (
+            <Button
+              variant={'outline'}
+              disabled={loading}
+              onClick={() => {
+                setSearchInput('');
+                setSelectedCategory('');
+                setSelectedSortAuction('');
+                setSelectedSortPrice('');
+                setFilterValue({
+                  searchInput: '',
+                  category: '',
+                  sortTypePrice: '',
+                  sortTypeAuction: '',
+                });
+              }}
+            >
+              Clear
+            </Button>
+          )}
           <Button
             onClick={() => {
               setFilterValue({
