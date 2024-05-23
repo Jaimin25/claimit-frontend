@@ -14,7 +14,7 @@ export default function AuctionCardsSkeleton() {
             <div className="w-30 flex h-48 items-center justify-center"></div>
           </Skeleton>
           <div className="flex gap-2">
-            <Skeleton className="h-6 w-6 rounded-full" />
+            <Skeleton className="h-8 w-8 rounded-full" />
             <Skeleton className="w-1/2" />
           </div>
           <div className="space-y-2">
