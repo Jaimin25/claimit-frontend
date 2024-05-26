@@ -699,10 +699,11 @@ export default function CreateAuctionForm() {
                           <Calendar
                             mode="single"
                             selected={field.value}
+                            today={createAuctionForm.getValues().startingDate}
                             onSelect={field.onChange}
                             disabled={(date) =>
-                              (date.getDate() !== new Date().getDate() &&
-                                date <= new Date()) ||
+                              date <
+                                new Date(new Date().setHours(0, 0, 0, 0)) ||
                               date < new Date('1900-01-01')
                             }
                             initialFocus
@@ -752,6 +753,7 @@ export default function CreateAuctionForm() {
                           <Calendar
                             mode="single"
                             selected={field.value}
+                            today={createAuctionForm.getValues().startingDate}
                             onSelect={field.onChange}
                             disabled={(date) => {
                               const selectedDate = new Date(date);

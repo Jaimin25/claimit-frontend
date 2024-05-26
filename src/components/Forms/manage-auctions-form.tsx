@@ -849,9 +849,10 @@ export default function ManageAuctionForm({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
+                            today={manageAuctionForm.getValues().startingDate}
                             disabled={(date) =>
-                              (date.getDate() !== new Date().getDate() &&
-                                date <= new Date()) ||
+                              date <
+                                new Date(new Date().setHours(0, 0, 0, 0)) ||
                               date < new Date('1900-01-01')
                             }
                             initialFocus
@@ -907,6 +908,7 @@ export default function ManageAuctionForm({
                           <Calendar
                             mode="single"
                             selected={field.value}
+                            today={manageAuctionForm.getValues().startingDate}
                             onSelect={field.onChange}
                             disabled={(date) => {
                               const selectedDate = new Date(date);
@@ -1154,29 +1156,28 @@ export default function ManageAuctionForm({
             Are you sure you want to delete the auction? This action cannot be
             undone!
           </DialogDescription>
-          <DialogFooter>
-            <div className="space-x-3">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setDeleteDialogOpen(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant={'destructive'}
-                className="bg-red-500 text-white"
-                onClick={() => {
-                  setDeleteDialogOpen(false);
-                  deleteAuctionMutation.mutate(auctionId);
-                  const currentToastId = toast.loading('Deleting auction...');
-                  setToastId(currentToastId);
-                }}
-              >
-                Confirm
-              </Button>
-            </div>
+          <DialogFooter className="gap-2 *:w-full">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant={'destructive'}
+              className="bg-red-500 text-white"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                deleteAuctionMutation.mutate(auctionId);
+                const currentToastId = toast.loading('Deleting auction...');
+                setToastId(currentToastId);
+              }}
+            >
+              Confirm
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
