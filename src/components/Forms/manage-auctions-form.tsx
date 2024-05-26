@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { CommandList } from 'cmdk';
 import { formatDate } from 'date-fns';
@@ -45,6 +46,13 @@ import { useMutation } from '@tanstack/react-query';
 
 import { ManageAuctionProps } from '../Auctions/Manage/manage-auctions';
 import { Calendar } from '../ui/calendar';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+} from '../ui/dialog';
 
 const MAX_FILE_SIZE = 3000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -188,6 +196,16 @@ const updateAuctionDetails = async (formValues: FormData) => {
   );
 };
 
+const deleteAuction = async (auctionId: string) => {
+  return await axios.post(
+    `${Config.APP_URL}/api/auction/deleteAuction`,
+    { auctionId },
+    {
+      withCredentials: true,
+    }
+  );
+};
+
 export default function ManageAuctionForm({
   manageAuctionDetails,
   auctionId,
@@ -195,13 +213,32 @@ export default function ManageAuctionForm({
   manageAuctionDetails: ManageAuctionProps | undefined;
   auctionId: string;
 }) {
+  const router = useRouter();
   const [toastId, setToastId] = useState<string | number>();
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const [initialValues, setInitialValues] =
     useState<Partial<ManageAuctionProps>>();
 
   const manageAuctionForm = useForm<z.infer<typeof manageAuctionFormSchema>>({
     resolver: zodResolver(manageAuctionFormSchema),
+  });
+
+  const deleteAuctionMutation = useMutation({
+    mutationFn: deleteAuction,
+    onSuccess: async (res) => {
+      const data = await res.data;
+
+      if (data.statusCode === 200) {
+        toast.success(data.statusMessage, { id: toastId });
+        router.push('/dashboard/myauctions');
+      } else {
+        toast.error(data.statusMessage, { id: toastId });
+      }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, { id: toastId }),
   });
 
   const updateAuctionDetailsMutation = useMutation({
@@ -1074,11 +1111,26 @@ export default function ManageAuctionForm({
                     </FormItem>
                   )}
                 />
-                <div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    className="w-full bg-red-500 text-white"
+                    variant={'destructive'}
+                    disabled={
+                      deleteAuctionMutation.isPending ||
+                      updateAuctionDetailsMutation.isPending
+                    }
+                    onClick={() => {
+                      setDeleteDialogOpen(true);
+                    }}
+                  >
+                    Delete
+                  </Button>
                   <Button
                     type="submit"
                     className="w-full"
                     disabled={
+                      deleteAuctionMutation.isPending ||
                       updateAuctionDetailsMutation.isPending ||
                       (manageAuctionDetails?.auctionStatus !== 'ACTIVE' &&
                         manageAuctionDetails?.auctionStatus !== 'UPCOMING')
@@ -1092,6 +1144,43 @@ export default function ManageAuctionForm({
           </CardContent>
         </Card>
       </div>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <h2 className="text-xl font-semibold">
+              🗑️ Delete {initialValues?.title}?
+            </h2>
+          </DialogHeader>
+          <DialogDescription>
+            Are you sure you want to delete the auction? This action cannot be
+            undone!
+          </DialogDescription>
+          <DialogFooter>
+            <div className="space-x-3">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setDeleteDialogOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant={'destructive'}
+                className="bg-red-500 text-white"
+                onClick={() => {
+                  setDeleteDialogOpen(false);
+                  deleteAuctionMutation.mutate(auctionId);
+                  const currentToastId = toast.loading('Deleting auction...');
+                  setToastId(currentToastId);
+                }}
+              >
+                Confirm
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
