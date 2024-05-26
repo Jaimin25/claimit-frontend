@@ -52,6 +52,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
 } from '../ui/dialog';
 
 const MAX_FILE_SIZE = 3000000;
@@ -1147,9 +1148,7 @@ export default function ManageAuctionForm({
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <h2 className="text-xl font-semibold">
-              🗑️ Delete {initialValues?.title}?
-            </h2>
+            <DialogTitle>🗑️ Delete {initialValues?.title}?</DialogTitle>
           </DialogHeader>
           <DialogDescription>
             Are you sure you want to delete the auction? This action cannot be

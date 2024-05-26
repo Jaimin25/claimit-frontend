@@ -992,45 +992,45 @@ export default function CreateAuctionForm() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>ℹ️ Basic information</DialogTitle>
-            <DialogDescription>
-              The auction can only be edited till the time there are no bids
-              made on it.
-            </DialogDescription>
-            <DialogFooter className="gap-2 *:w-full">
-              <Button variant={'outline'}>Cancel</Button>
-              <Button
-                onClick={() => {
-                  setIsRuleOpen(false);
-                  onSubmit(createAuctionForm.getValues());
-                }}
-                variant={'default'}
-              >
-                Agree & Create
-              </Button>
-            </DialogFooter>
           </DialogHeader>
+          <DialogDescription>
+            The auction can only be edited till the time there are no bids made
+            on it.
+          </DialogDescription>
+          <DialogFooter className="gap-2 *:w-full">
+            <Button variant={'outline'}>Cancel</Button>
+            <Button
+              onClick={() => {
+                setIsRuleOpen(false);
+                onSubmit(createAuctionForm.getValues());
+              }}
+              variant={'default'}
+            >
+              Agree & Create
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       <Dialog open={open} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>🎉 Auction Created</DialogTitle>
-            <DialogDescription>
-              You auction has been successfully created!
-            </DialogDescription>
-            <DialogFooter className="gap-2">
-              <Link href={`/auctions/manage/${auctionId}`} className="w-full">
-                <Button variant={'outline'} className="w-full">
-                  Manage
-                </Button>
-              </Link>
-              <Link href={`/auctions/view/${auctionId}`} className="w-full">
-                <Button variant={'default'} className="w-full">
-                  View
-                </Button>
-              </Link>
-            </DialogFooter>
           </DialogHeader>
+          <DialogDescription>
+            You auction has been successfully created!
+          </DialogDescription>
+          <DialogFooter className="gap-2">
+            <Link href={`/auctions/manage/${auctionId}`} className="w-full">
+              <Button variant={'outline'} className="w-full">
+                Manage
+              </Button>
+            </Link>
+            <Link href={`/auctions/view/${auctionId}`} className="w-full">
+              <Button variant={'default'} className="w-full">
+                View
+              </Button>
+            </Link>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
