@@ -233,6 +233,10 @@ export default function CreateAuctionForm() {
       toast.error(`${error.name}: ${error.message}`, { id: toastId }),
   });
 
+  const showDialogOnSubmit = () => {
+    setIsRuleOpen(true);
+  };
+
   const onSubmit = (values: z.infer<typeof createAuctionFormSchema>) => {
     const currentToastId = toast.loading('Creating auction...');
 
@@ -289,7 +293,12 @@ export default function CreateAuctionForm() {
           <CardContent>
             <Form {...createAuctionForm}>
               <form
-                onSubmit={createAuctionForm.handleSubmit(onSubmit)}
+                onSubmit={createAuctionForm.handleSubmit(
+                  showDialogOnSubmit,
+                  () => {
+                    toast.error('Please fill all the fields!');
+                  }
+                )}
                 className="space-y-8"
               >
                 {/* TITLE FIELD*/}
@@ -967,10 +976,9 @@ export default function CreateAuctionForm() {
                 </div>
                 <div>
                   <Button
-                    type="button"
+                    type="submit"
                     className="w-full"
                     disabled={!isChecked || createAuctionMutation.isPending}
-                    onClick={() => setIsRuleOpen(true)}
                   >
                     Create
                   </Button>
@@ -1011,9 +1019,11 @@ export default function CreateAuctionForm() {
               You auction has been successfully created!
             </DialogDescription>
             <DialogFooter className="gap-2">
-              <Button variant={'outline'} className="w-full">
-                Manage
-              </Button>
+              <Link href={`/auctions/manage/${auctionId}`} className="w-full">
+                <Button variant={'outline'} className="w-full">
+                  Manage
+                </Button>
+              </Link>
               <Link href={`/auctions/view/${auctionId}`} className="w-full">
                 <Button variant={'default'} className="w-full">
                   View

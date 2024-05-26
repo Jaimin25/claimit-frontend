@@ -258,7 +258,9 @@ export default function AccountDetailsForm() {
           <CardContent>
             <Form {...accountDetailsForm}>
               <form
-                onSubmit={accountDetailsForm.handleSubmit(onSubmit)}
+                onSubmit={accountDetailsForm.handleSubmit(onSubmit, () => {
+                  toast.error('Please fill all the fields!');
+                })}
                 className="space-y-8"
               >
                 <h2 className="text-xl font-semibold">Basic Details</h2>

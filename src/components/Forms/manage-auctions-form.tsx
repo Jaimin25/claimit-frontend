@@ -402,7 +402,9 @@ export default function ManageAuctionForm({
           <CardContent>
             <Form {...manageAuctionForm}>
               <form
-                onSubmit={manageAuctionForm.handleSubmit(onSubmit)}
+                onSubmit={manageAuctionForm.handleSubmit(onSubmit, () => {
+                  toast.error('Please fill all the fields!');
+                })}
                 className="space-y-8"
               >
                 {/* TITLE FIELD*/}
