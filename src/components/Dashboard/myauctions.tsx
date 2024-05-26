@@ -67,16 +67,75 @@ export default function MyAuctions() {
             <FaSearch />
             <Input placeholder="Search auctions..." />
           </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div>
             {!fetchUserAuctionsMutation.isPending &&
             userAuctions &&
-            userAuctions.length >= 1
-              ? userAuctions?.map((item, i) => (
-                  <DashboardAuctionCard key={i} auction={item} />
-                ))
-              : Array(4)
+            userAuctions.length >= 1 ? (
+              <div className="space-y-8">
+                {userAuctions.filter((item) => item.auctionStatus === 'ACTIVE')
+                  .length >= 1 && (
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold">Active</h2>
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                      {userAuctions
+                        .filter((item) => item.auctionStatus === 'ACTIVE')
+                        .map((item) => (
+                          <DashboardAuctionCard key={item.id} auction={item} />
+                        ))}
+                    </div>
+                  </div>
+                )}
+                {userAuctions.filter(
+                  (item) => item.auctionStatus === 'UPCOMING'
+                ).length >= 1 && (
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold">Upcoming</h2>
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                      {userAuctions
+                        .filter((item) => item.auctionStatus === 'UPCOMING')
+                        .map((item) => (
+                          <DashboardAuctionCard key={item.id} auction={item} />
+                        ))}
+                    </div>
+                  </div>
+                )}
+                {userAuctions.filter((item) => item.auctionStatus === 'SOLD')
+                  .length >= 1 && (
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold">Sold</h2>
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                      {userAuctions
+                        .filter((item) => item.auctionStatus === 'SOLD')
+                        .map((item) => (
+                          <DashboardAuctionCard key={item.id} auction={item} />
+                        ))}
+                    </div>
+                  </div>
+                )}
+                {userAuctions.filter(
+                  (item) => item.auctionStatus === 'FINISHED'
+                ).length >= 1 && (
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold">Finished</h2>
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                      {userAuctions
+                        .filter((item) => item.auctionStatus === 'FINISHED')
+                        .map((item) => (
+                          <DashboardAuctionCard key={item.id} auction={item} />
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                {Array(4)
                   .fill(0)
-                  .map((_, i) => <DashAuctionCardsSkele key={i} />)}
+                  .map((_, i) => (
+                    <DashAuctionCardsSkele key={i} />
+                  ))}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

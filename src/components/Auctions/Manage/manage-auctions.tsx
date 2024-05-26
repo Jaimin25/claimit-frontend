@@ -47,6 +47,7 @@ export default function ManageAuctions({ auctionId }: { auctionId: string }) {
       const data = await res.data;
       if (data.statusCode === 200) {
         setAuctionDetails(data.auctionDetails as ManageAuctionProps);
+        toast.success('Auction Found');
       } else {
         toast.error(data.statusMessage);
       }
@@ -61,7 +62,7 @@ export default function ManageAuctions({ auctionId }: { auctionId: string }) {
 
   return (
     <ManageAuctionForm
-      manageAuctionDetails={auctionDetails as ManageAuctionProps}
+      manageAuctionDetails={auctionDetails}
       auctionId={auctionId}
     />
   );

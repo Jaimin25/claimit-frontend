@@ -192,7 +192,7 @@ export default function ManageAuctionForm({
   manageAuctionDetails,
   auctionId,
 }: {
-  manageAuctionDetails: ManageAuctionProps;
+  manageAuctionDetails: ManageAuctionProps | undefined;
   auctionId: string;
 }) {
   const [toastId, setToastId] = useState<string | number>();
@@ -211,9 +211,9 @@ export default function ManageAuctionForm({
 
       if (data.statusCode === 200) {
         const auctionDetails: ManageAuctionProps = data.auctionDetails;
-        type UnAllowedKeys = 'imagesUrl';
+        type UnAllowedKeys = 'imagesUrl' | 'id' | 'createdAt';
 
-        const unWantedKeys: UnAllowedKeys[] = ['imagesUrl'];
+        const unWantedKeys: UnAllowedKeys[] = ['imagesUrl', 'id', 'createdAt'];
 
         const iniVals: Partial<ManageAuctionProps> = {};
 
@@ -332,51 +332,60 @@ export default function ManageAuctionForm({
   const img4FileRef = manageAuctionForm.register('img4');
 
   useEffect(() => {
-    manageAuctionForm.setValue('title', manageAuctionDetails.title);
-    manageAuctionForm.setValue('description', manageAuctionDetails.description);
-    manageAuctionForm.setValue('category', manageAuctionDetails.category);
-    setPreview1(manageAuctionDetails.imagesUrl[0]!);
-    setPreview2(manageAuctionDetails.imagesUrl[1]!);
-    if (manageAuctionDetails.imagesUrl[2]) {
-      setPreview3(manageAuctionDetails.imagesUrl[2]);
-    }
-    if (manageAuctionDetails.imagesUrl[3]) {
-      setPreview4(manageAuctionDetails.imagesUrl[3]);
-    }
-    manageAuctionForm.setValue(
-      'startingDate',
-      new Date(new Date(manageAuctionDetails.startingDate).toUTCString())
-    );
-    manageAuctionForm.setValue(
-      'endingDate',
-      new Date(new Date(manageAuctionDetails.endingDate).toLocaleString())
-    );
-    manageAuctionForm.setValue(
-      'basePrice',
-      Number(manageAuctionDetails.basePrice)
-    );
-    manageAuctionForm.setValue(
-      'buyPrice',
-      Number(manageAuctionDetails.buyPrice)
-    );
-    manageAuctionForm.setValue('city', manageAuctionDetails.city);
-    manageAuctionForm.setValue('state', manageAuctionDetails.state);
-    manageAuctionForm.setValue('country', manageAuctionDetails.country);
-    manageAuctionForm.setValue('zipcode', Number(manageAuctionDetails.zipcode));
-
-    type UnAllowedKeys = 'imagesUrl';
-
-    const unWantedKeys: UnAllowedKeys[] = ['imagesUrl'];
-
-    const iniVals: Partial<ManageAuctionProps> = {};
-
-    for (const key in manageAuctionDetails) {
-      if (!unWantedKeys.includes(key as UnAllowedKeys)) {
-        const typedKey = key as keyof ManageAuctionProps;
-        iniVals[typedKey] = manageAuctionDetails[typedKey] as string & string[];
+    if (manageAuctionDetails) {
+      manageAuctionForm.setValue('title', manageAuctionDetails.title);
+      manageAuctionForm.setValue(
+        'description',
+        manageAuctionDetails.description
+      );
+      manageAuctionForm.setValue('category', manageAuctionDetails.category);
+      setPreview1(manageAuctionDetails.imagesUrl[0]!);
+      setPreview2(manageAuctionDetails.imagesUrl[1]!);
+      if (manageAuctionDetails.imagesUrl[2]) {
+        setPreview3(manageAuctionDetails.imagesUrl[2]);
       }
+      if (manageAuctionDetails.imagesUrl[3]) {
+        setPreview4(manageAuctionDetails.imagesUrl[3]);
+      }
+      manageAuctionForm.setValue(
+        'startingDate',
+        new Date(new Date(manageAuctionDetails.startingDate).toUTCString())
+      );
+      manageAuctionForm.setValue(
+        'endingDate',
+        new Date(new Date(manageAuctionDetails.endingDate).toLocaleString())
+      );
+      manageAuctionForm.setValue(
+        'basePrice',
+        Number(manageAuctionDetails.basePrice)
+      );
+      manageAuctionForm.setValue(
+        'buyPrice',
+        Number(manageAuctionDetails.buyPrice)
+      );
+      manageAuctionForm.setValue('city', manageAuctionDetails.city);
+      manageAuctionForm.setValue('state', manageAuctionDetails.state);
+      manageAuctionForm.setValue('country', manageAuctionDetails.country);
+      manageAuctionForm.setValue(
+        'zipcode',
+        Number(manageAuctionDetails.zipcode)
+      );
+
+      type UnAllowedKeys = 'imagesUrl';
+
+      const unWantedKeys: UnAllowedKeys[] = ['imagesUrl'];
+
+      const iniVals: Partial<ManageAuctionProps> = {};
+
+      for (const key in manageAuctionDetails) {
+        if (!unWantedKeys.includes(key as UnAllowedKeys)) {
+          const typedKey = key as keyof ManageAuctionProps;
+          iniVals[typedKey] = manageAuctionDetails[typedKey] as string &
+            string[];
+        }
+      }
+      setInitialValues(iniVals);
     }
-    setInitialValues(iniVals);
   }, [manageAuctionForm, manageAuctionDetails]);
 
   return (
@@ -640,7 +649,7 @@ export default function ManageAuctionForm({
                 </div>
 
                 {/* IMAGES: 3 & 4 FIELDs*/}
-                <div className="flex flex-col gap-8 *:w-full md:flex-row">
+                <div className="flex flex-col gap-8 *:w-full sm:flex-row">
                   {/* IMAGE 3 FIELD*/}
                   <FormField
                     control={manageAuctionForm.control}
@@ -781,7 +790,7 @@ export default function ManageAuctionForm({
                                 !field.value && 'text-muted-foreground'
                               )}
                               disabled={
-                                manageAuctionDetails.auctionStatus !==
+                                manageAuctionDetails?.auctionStatus !==
                                   'UPCOMING' ||
                                 initialValues?.auctionStatus !== 'UPCOMING'
                               }
@@ -839,9 +848,9 @@ export default function ManageAuctionForm({
                                 !field.value && 'text-muted-foreground'
                               )}
                               disabled={
-                                manageAuctionDetails.auctionStatus !==
+                                manageAuctionDetails?.auctionStatus !==
                                   'ACTIVE' &&
-                                manageAuctionDetails.auctionStatus !==
+                                manageAuctionDetails?.auctionStatus !==
                                   'UPCOMING'
                               }
                             >
@@ -864,10 +873,15 @@ export default function ManageAuctionForm({
                               const startingDate = new Date(
                                 manageAuctionForm.getValues().startingDate
                               );
+                              const minAllowedDate = new Date(startingDate);
+                              minAllowedDate.setDate(
+                                startingDate.getDate() + 15
+                              ); // Add 15 days to the starting date
 
-                              // Disable dates before the starting date and before '1900-01-01'
+                              // Disable dates before the minimum allowed date and before '1900-01-01'
                               return (
                                 selectedDate <= startingDate ||
+                                selectedDate > minAllowedDate ||
                                 selectedDate < new Date('1900-01-01')
                               );
                             }}
@@ -876,7 +890,8 @@ export default function ManageAuctionForm({
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Day when auction will end
+                        Day when auction will end, can only select 15 days
+                        further from starting date
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -1063,8 +1078,8 @@ export default function ManageAuctionForm({
                     className="w-full"
                     disabled={
                       updateAuctionDetailsMutation.isPending ||
-                      (manageAuctionDetails.auctionStatus !== 'ACTIVE' &&
-                        manageAuctionDetails.auctionStatus !== 'UPCOMING')
+                      (manageAuctionDetails?.auctionStatus !== 'ACTIVE' &&
+                        manageAuctionDetails?.auctionStatus !== 'UPCOMING')
                     }
                   >
                     Save

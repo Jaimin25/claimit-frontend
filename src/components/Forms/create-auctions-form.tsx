@@ -749,10 +749,15 @@ export default function CreateAuctionForm() {
                               const startingDate = new Date(
                                 createAuctionForm.getValues().startingDate
                               );
+                              const minAllowedDate = new Date(startingDate);
+                              minAllowedDate.setDate(
+                                startingDate.getDate() + 15
+                              ); // Add 15 days to the starting date
 
-                              // Disable dates before the starting date and before '1900-01-01'
+                              // Disable dates before the minimum allowed date and before '1900-01-01'
                               return (
                                 selectedDate <= startingDate ||
+                                selectedDate > minAllowedDate ||
                                 selectedDate < new Date('1900-01-01')
                               );
                             }}
@@ -761,7 +766,8 @@ export default function CreateAuctionForm() {
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Day when auction will end
+                        Day when auction will end, can only select 15 days
+                        further from starting date
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
