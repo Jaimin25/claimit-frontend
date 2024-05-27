@@ -88,7 +88,7 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
           <p>Oops! Looks like you are lost</p> <BiConfused size={24} />
         </h2>
         <p>The auction could not be found</p>
-        <Link href="/marketplace">
+        <Link href="/marketplace?offset=0">
           <Button className="flex items-center gap-2">
             <AiOutlineShop size={20} /> <p>Go to marketplace</p>
           </Button>

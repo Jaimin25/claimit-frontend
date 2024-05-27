@@ -26,9 +26,14 @@ export default function AuctionClaimSection({
 }) {
   const [endTime, setEndTime] = useState('--:--:--');
 
-  const currentDate = new Date().toString();
+  const currentDate = new Date().getTime();
+
   useEffect(() => {
-    if (deadline && auctionStatus === 'ACTIVE' && currentDate <= deadline) {
+    if (
+      deadline &&
+      auctionStatus === 'ACTIVE' &&
+      new Date(deadline).getTime() >= currentDate
+    ) {
       const interval = setInterval(() => {
         setEndTime(
           getAuctionEndTime(deadline.toString()).replace('(Until ends)', '')
@@ -50,13 +55,19 @@ export default function AuctionClaimSection({
           <h2 className="text-2xl font-semibold">{title}</h2>
           <Button
             variant={'outline'}
-            disabled={auctionStatus !== 'ACTIVE' || currentDate >= deadline}
+            disabled={
+              auctionStatus !== 'ACTIVE' ||
+              currentDate >= new Date(deadline).getTime()
+            }
           >
             Bid
           </Button>
           <Button
             variant={'default'}
-            disabled={auctionStatus !== 'ACTIVE' || currentDate >= deadline}
+            disabled={
+              auctionStatus !== 'ACTIVE' ||
+              currentDate >= new Date(deadline).getTime()
+            }
           >
             Buy {auctionStatus === 'SOLD' ? '(SOLD)' : `(₹${buyPrice})`}
           </Button>

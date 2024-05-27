@@ -38,7 +38,7 @@ export default function Footer() {
         </div>
         <div className="flex flex-col items-center justify-center gap-2">
           <div className="flex flex-col gap-2 text-center">
-            <Link href={'/marketplace'} className="hover:underline">
+            <Link href={'/marketplace?offset=0'} className="hover:underline">
               Buy Item
             </Link>
             <Link href={'/auctions/create'} className="hover:underline">

@@ -75,7 +75,7 @@ export default function Header() {
         <Link href={'/auctions/create'}>
           <Button variant={'outline'}>Sell on claimit</Button>
         </Link>
-        <Link href={'/marketplace'}>
+        <Link href={'/marketplace?offset=0'}>
           <Button variant={'link'}>Marketplace</Button>
         </Link>
         <Link href={'/contact'}>
@@ -130,7 +130,7 @@ export default function Header() {
               <Link href={'/auctions/create'}>
                 <MenubarItem>Sell</MenubarItem>
               </Link>
-              <Link href={'/marketplace'}>
+              <Link href={'/marketplace?offset=0'}>
                 <MenubarItem>Marketplace</MenubarItem>
               </Link>
               <Link href="/contact">
