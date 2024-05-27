@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { getAuctionEndTime } from '@/lib/utils';
 
-import { AuctionDetailsProps } from '../Marketplace/marketplace';
+import { AuctionDetailsProps } from '../Providers/marketplace-auctions-provider';
 
 export default function AuctionCards({
   auction,
