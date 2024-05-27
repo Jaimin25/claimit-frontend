@@ -21,10 +21,6 @@ export interface AuctionDetailsProps {
   };
   bids: {
     id: number;
-    user: {
-      username: string;
-      profilePicUrl: string;
-    };
   }[];
 }
 
