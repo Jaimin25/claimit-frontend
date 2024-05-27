@@ -391,7 +391,7 @@ export default function ManageAuctionForm({
       );
       manageAuctionForm.setValue(
         'endingDate',
-        new Date(new Date(manageAuctionDetails.endingDate).toLocaleString())
+        new Date(new Date(manageAuctionDetails.endingDate).toUTCString())
       );
       manageAuctionForm.setValue(
         'basePrice',
@@ -849,7 +849,11 @@ export default function ManageAuctionForm({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            today={manageAuctionForm.getValues().startingDate}
+                            today={
+                              new Date(
+                                manageAuctionForm.getValues().startingDate
+                              )
+                            }
                             disabled={(date) =>
                               date <
                                 new Date(new Date().setHours(0, 0, 0, 0)) ||
@@ -908,7 +912,9 @@ export default function ManageAuctionForm({
                           <Calendar
                             mode="single"
                             selected={field.value}
-                            today={manageAuctionForm.getValues().startingDate}
+                            today={
+                              new Date(manageAuctionForm.getValues().endingDate)
+                            }
                             onSelect={field.onChange}
                             disabled={(date) => {
                               const selectedDate = new Date(date);
