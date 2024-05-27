@@ -114,12 +114,15 @@ export default function Sidebar() {
                 setSelectedCategory('');
                 setSelectedSortAuction('');
                 setSelectedSortPrice('');
-                setFilterValue({
-                  searchInput: '',
-                  category: '',
-                  sortTypePrice: '',
-                  sortTypeAuction: '',
-                });
+                setFilterValue(
+                  {
+                    searchInput: '',
+                    category: '',
+                    sortTypePrice: '',
+                    sortTypeAuction: '',
+                  },
+                  'clear'
+                );
               }}
             >
               Clear
@@ -127,12 +130,15 @@ export default function Sidebar() {
           )}
           <Button
             onClick={() => {
-              setFilterValue({
-                searchInput: searchInput,
-                category: selectedCategory,
-                sortTypeAuction: selectedSortAuction,
-                sortTypePrice: selectedSortPrice,
-              });
+              setFilterValue(
+                {
+                  searchInput: searchInput,
+                  category: selectedCategory,
+                  sortTypeAuction: selectedSortAuction,
+                  sortTypePrice: selectedSortPrice,
+                },
+                'search'
+              );
             }}
             disabled={loading}
           >

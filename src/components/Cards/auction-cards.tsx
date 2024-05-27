@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaClock, FaGavel, FaWallet } from 'react-icons/fa';
-import { HiUsers } from 'react-icons/hi';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -59,10 +58,10 @@ export default function AuctionCards({
               <FaWallet size={20} className="fill-amber-500" />₹
               {auction.buyPrice} (Buy price)
             </div>
-            <div className="flex items-center gap-2">
-              <HiUsers size={20} className="fill-violet-500" />
-              <p>{auction.bids.length}</p>
-            </div>
+            {/* <div className="flex items-center gap-2"> */}
+            {/*   <HiUsers size={20} className="fill-violet-500" /> */}
+            {/*   <p>{auction.bids.length}</p> */}
+            {/* </div> */}
             <div className="flex items-center gap-2">
               <FaClock size={20} className="fill-blue-500" />
               <p>{endTime}</p>

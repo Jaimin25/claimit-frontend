@@ -38,7 +38,7 @@ interface FilterProps {
 interface MarketplaceAuctionContextProps {
   auctions: AuctionDetailsProps[] | null;
   loading: boolean;
-  setFilterValue: (value: FilterProps) => void;
+  setFilterValue: (value: FilterProps, type: string) => void;
   pagesCount: number | undefined;
   setAuctionsOffset: (value: number) => void;
 }
@@ -103,6 +103,7 @@ export function MarketplaceAuctionsProvider({
   });
 
   useEffect(() => {
+    console.log(filterVal);
     fetchAllMarketplaceAuctionsMutation.mutate({
       filterValues: filterVal,
       offset: searchParams.get('offset')
@@ -112,25 +113,31 @@ export function MarketplaceAuctionsProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const setFilterValue = (value: FilterProps) => {
+  const setFilterValue = (value: FilterProps, type: string) => {
     // console.log(value);
-    // if (
-    //   !value.searchInput &&
-    //   !value.category &&
-    //   !value.sortTypeAuction &&
-    //   !value.sortTypePrice
-    // ) {
-    //   if (tempAuctions) {
-    //     setAuctions(tempAuctions);
-    //   }
-    //   return;
-    // }
-    setFilterVal(value);
-    fetchAllMarketplaceAuctionsMutation.mutate({
-      filterValues: value,
-      offset: 0,
-    });
-    router.push(`/marketplace?offset=0`);
+    if (type === 'search') {
+      if (
+        !value.searchInput &&
+        !value.category &&
+        !value.sortTypeAuction &&
+        !value.sortTypePrice
+      ) {
+        router.push(`/marketplace?offset=0`);
+        setFilterVal(value);
+        return;
+      }
+      setFilterVal(value);
+      fetchAllMarketplaceAuctionsMutation.mutate({
+        filterValues: value,
+        offset: 0,
+      });
+    } else {
+      setFilterVal(value);
+      fetchAllMarketplaceAuctionsMutation.mutate({
+        filterValues: value,
+        offset: 0,
+      });
+    }
   };
 
   const setAuctionsOffset = (value: number) => {
