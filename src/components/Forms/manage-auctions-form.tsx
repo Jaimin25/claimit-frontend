@@ -1,7 +1,8 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { CommandList } from 'cmdk';
 import { formatDate } from 'date-fns';
@@ -15,7 +16,6 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Command,
   CommandEmpty,
@@ -44,7 +44,7 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 
-import { useUser } from '../Providers/user-provider';
+import { ManageAuctionProps } from '../Auctions/Manage/manage-auctions';
 import { Calendar } from '../ui/calendar';
 import {
   Dialog,
@@ -73,19 +73,19 @@ const categories = [
   { label: 'Mobile', value: 'mobile' },
 ] as const;
 
-const createAuctionFormSchema = z.object({
+const manageAuctionFormSchema = z.object({
   title: z.string().trim().min(1, { message: 'Please fill this field' }),
   description: z.string().trim().min(1, { message: 'Please fill this field' }),
   img1:
     typeof window === 'undefined'
       ? z.any()
       : z
-          .instanceof(FileList)
-          .refine((files) => files?.length == 1, 'Image is required.')
+          .any()
+          .optional()
           .refine(
             (files) =>
-              files?.length == 1
-                ? files?.[0]!.size <= MAX_FILE_SIZE
+              files.length == 1
+                ? files[0].size <= MAX_FILE_SIZE
                   ? true
                   : false
                 : true,
@@ -94,7 +94,7 @@ const createAuctionFormSchema = z.object({
           )
           .refine(
             (files) =>
-              files?.length == 1
+              files.length == 1
                 ? ACCEPTED_IMAGE_TYPES.includes(files?.[0]!.type)
                   ? true
                   : false
@@ -105,12 +105,12 @@ const createAuctionFormSchema = z.object({
     typeof window === 'undefined'
       ? z.any()
       : z
-          .instanceof(FileList)
-          .refine((files) => files?.length == 1, 'Image is required.')
+          .any()
+          .optional()
           .refine(
             (files) =>
-              files?.length == 1
-                ? files?.[0]!.size <= MAX_FILE_SIZE
+              files.length == 1
+                ? files[0].size <= MAX_FILE_SIZE
                   ? true
                   : false
                 : true,
@@ -187,44 +187,53 @@ const createAuctionFormSchema = z.object({
   zipcode: z.coerce.number({ required_error: 'Please fill this field' }),
 });
 
-const submitCreateAuctionForm = async (formValues: FormData) => {
-  return await axios.post(`${Config.APP_URL}/api/auction/create`, formValues, {
-    withCredentials: true,
-  });
+const updateAuctionDetails = async (formValues: FormData) => {
+  return await axios.post(
+    `${Config.APP_URL}/api/auction/updateAuctionDetails`,
+    formValues,
+    {
+      withCredentials: true,
+    }
+  );
 };
 
-export default function CreateAuctionForm() {
+const deleteAuction = async (auctionId: string) => {
+  return await axios.post(
+    `${Config.APP_URL}/api/auction/deleteAuction`,
+    { auctionId },
+    {
+      withCredentials: true,
+    }
+  );
+};
+
+export default function ManageAuctionForm({
+  manageAuctionDetails,
+  auctionId,
+}: {
+  manageAuctionDetails: ManageAuctionProps | undefined;
+  auctionId: string;
+}) {
+  const router = useRouter();
   const [toastId, setToastId] = useState<string | number>();
 
-  const [isChecked, setIsChecked] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const [open, setIsOpen] = useState(false);
+  const [initialValues, setInitialValues] =
+    useState<Partial<ManageAuctionProps>>();
 
-  const [ruleOpen, setIsRuleOpen] = useState(false);
-
-  const [auctionId, setAuctionId] = useState('');
-
-  const createAuctionForm = useForm<z.infer<typeof createAuctionFormSchema>>({
-    resolver: zodResolver(createAuctionFormSchema),
+  const manageAuctionForm = useForm<z.infer<typeof manageAuctionFormSchema>>({
+    resolver: zodResolver(manageAuctionFormSchema),
   });
 
-  const { user } = useUser();
-
-  const createAuctionMutation = useMutation({
-    mutationFn: submitCreateAuctionForm,
+  const deleteAuctionMutation = useMutation({
+    mutationFn: deleteAuction,
     onSuccess: async (res) => {
       const data = await res.data;
 
       if (data.statusCode === 200) {
-        setIsOpen(true);
-        setPreview1('');
-        setPreview2('');
-        setPreview3('');
-        setPreview4('');
         toast.success(data.statusMessage, { id: toastId });
-        // createAuctionForm.reset();
-        setAuctionId(data.auctionId);
-        setIsOpen(true);
+        router.push('/dashboard/myauctions');
       } else {
         toast.error(data.statusMessage, { id: toastId });
       }
@@ -233,77 +242,212 @@ export default function CreateAuctionForm() {
       toast.error(`${error.name}: ${error.message}`, { id: toastId }),
   });
 
-  const showDialogOnSubmit = () => {
-    setIsRuleOpen(true);
-  };
+  const updateAuctionDetailsMutation = useMutation({
+    mutationFn: updateAuctionDetails,
+    onSuccess: async (res) => {
+      const data = await res.data;
 
-  const onSubmit = (values: z.infer<typeof createAuctionFormSchema>) => {
-    const currentToastId = toast.loading('Creating auction...');
+      if (data.statusCode === 200) {
+        const auctionDetails: ManageAuctionProps = data.auctionDetails;
+        type UnAllowedKeys = 'imagesUrl' | 'id' | 'createdAt';
 
-    const formData = new FormData();
+        const unWantedKeys: UnAllowedKeys[] = ['imagesUrl', 'id', 'createdAt'];
 
+        const iniVals: Partial<ManageAuctionProps> = {};
+
+        for (const key in auctionDetails) {
+          if (!unWantedKeys.includes(key as UnAllowedKeys)) {
+            const typedKey = key as keyof ManageAuctionProps;
+            if (typedKey === 'startingDate' || typedKey === 'endingDate') {
+              iniVals[typedKey] = new Date(auctionDetails[typedKey]).toString();
+            } else {
+              iniVals[typedKey] = auctionDetails[typedKey] as string & string[];
+            }
+          }
+        }
+        setInitialValues(iniVals);
+        if (auctionDetails.imagesUrl[0]) {
+          setPreview1(auctionDetails.imagesUrl[0]);
+        }
+        if (auctionDetails.imagesUrl[1]) {
+          setPreview2(auctionDetails.imagesUrl[1] as string);
+        }
+        if (auctionDetails.imagesUrl[2]) {
+          setPreview2(auctionDetails.imagesUrl[2] as string);
+        }
+        if (auctionDetails.imagesUrl[3]) {
+          setPreview4(auctionDetails.imagesUrl[3] as string);
+        }
+        toast.success(data.statusMessage, { id: toastId });
+        manageAuctionForm.setValue('img1', '');
+        manageAuctionForm.setValue('img2', '');
+        manageAuctionForm.setValue('img3', '');
+        manageAuctionForm.setValue('img4', '');
+      } else {
+        toast.error(data.statusMessage, { id: toastId });
+      }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, { id: toastId }),
+  });
+
+  const onSubmit = (values: z.infer<typeof manageAuctionFormSchema>) => {
     values.img1 = values.img1[0];
     values.img2 = values.img2[0];
     values.img3 = values.img3[0];
     values.img4 = values.img4[0];
 
-    formData.append('img1', values.img1);
-    formData.append('img2', values.img2);
+    const formData = new FormData();
 
+    const changedFields: Partial<ManageAuctionProps> = {};
+
+    type UnAllowedKeys = 'auctionStatus';
+
+    const unWantedKeys: UnAllowedKeys[] = ['auctionStatus'];
+
+    for (const key in initialValues) {
+      if (!unWantedKeys.includes(key as UnAllowedKeys)) {
+        const typedKey = key as keyof z.infer<typeof manageAuctionFormSchema>;
+        if (typedKey === 'endingDate' || typedKey === 'startingDate') {
+          if (
+            new Date(values[typedKey]).toLocaleDateString() !==
+            new Date(String(initialValues![typedKey])).toLocaleDateString()
+          ) {
+            changedFields[typedKey] = String(values[typedKey]);
+          }
+        } else if (
+          String(values[typedKey]) !== String(initialValues[typedKey])
+        ) {
+          changedFields[typedKey] = values[typedKey] as string & string[];
+        }
+      }
+    }
+
+    if (
+      Object.keys(changedFields).length === 0 &&
+      !values.img1 &&
+      !values.img2 &&
+      !values.img3 &&
+      !values.img4
+    ) {
+      return toast.error('Nothing to update!');
+    }
+
+    const json = JSON.stringify(changedFields);
+
+    if (values.img1) {
+      formData.append('img1', values.img1);
+    }
+    if (values.img2) {
+      formData.append('img2', values.img2);
+    }
     if (values.img3) {
       formData.append('img3', values.img3);
     }
     if (values.img4) {
       formData.append('img4', values.img4);
     }
+    formData.append('updateAuctionData', json);
+    formData.append('auctionId', auctionId);
+    formData.append('auctionStatus', initialValues?.auctionStatus as string);
 
-    const json = JSON.stringify(values);
-    formData.append('auctionData', json);
+    updateAuctionDetailsMutation.mutate(formData);
 
-    createAuctionMutation.mutate(formData);
+    const currentToastId = toast.loading('Updating...');
     setToastId(currentToastId);
   };
 
   const [preview1, setPreview1] = useState('');
-  const img1FileRef = createAuctionForm.register('img1');
+  const img1FileRef = manageAuctionForm.register('img1');
 
   const [preview2, setPreview2] = useState('');
-  const img2FileRef = createAuctionForm.register('img2');
+  const img2FileRef = manageAuctionForm.register('img2');
 
   const [preview3, setPreview3] = useState('');
-  const img3FileRef = createAuctionForm.register('img3');
+  const img3FileRef = manageAuctionForm.register('img3');
 
   const [preview4, setPreview4] = useState('');
-  const img4FileRef = createAuctionForm.register('img4');
+  const img4FileRef = manageAuctionForm.register('img4');
 
   useEffect(() => {
-    createAuctionForm.setValue('city', user?.city as string);
-    createAuctionForm.setValue('state', user?.state as string);
-    createAuctionForm.setValue('country', user?.country as string);
-    createAuctionForm.setValue('zipcode', user?.zipcode as number);
-  }, [user, createAuctionForm]);
+    if (manageAuctionDetails) {
+      manageAuctionForm.setValue('title', manageAuctionDetails.title);
+      manageAuctionForm.setValue(
+        'description',
+        manageAuctionDetails.description
+      );
+      manageAuctionForm.setValue('category', manageAuctionDetails.category);
+      setPreview1(manageAuctionDetails.imagesUrl[0]!);
+      setPreview2(manageAuctionDetails.imagesUrl[1]!);
+      if (manageAuctionDetails.imagesUrl[2]) {
+        setPreview3(manageAuctionDetails.imagesUrl[2]);
+      }
+      if (manageAuctionDetails.imagesUrl[3]) {
+        setPreview4(manageAuctionDetails.imagesUrl[3]);
+      }
+      manageAuctionForm.setValue(
+        'startingDate',
+        new Date(new Date(manageAuctionDetails.startingDate).toUTCString())
+      );
+      manageAuctionForm.setValue(
+        'endingDate',
+        new Date(new Date(manageAuctionDetails.endingDate).toLocaleString())
+      );
+      manageAuctionForm.setValue(
+        'basePrice',
+        Number(manageAuctionDetails.basePrice)
+      );
+      manageAuctionForm.setValue(
+        'buyPrice',
+        Number(manageAuctionDetails.buyPrice)
+      );
+      manageAuctionForm.setValue('city', manageAuctionDetails.city);
+      manageAuctionForm.setValue('state', manageAuctionDetails.state);
+      manageAuctionForm.setValue('country', manageAuctionDetails.country);
+      manageAuctionForm.setValue(
+        'zipcode',
+        Number(manageAuctionDetails.zipcode)
+      );
+
+      type UnAllowedKeys = 'imagesUrl';
+
+      const unWantedKeys: UnAllowedKeys[] = ['imagesUrl'];
+
+      const iniVals: Partial<ManageAuctionProps> = {};
+
+      for (const key in manageAuctionDetails) {
+        if (!unWantedKeys.includes(key as UnAllowedKeys)) {
+          const typedKey = key as keyof ManageAuctionProps;
+          iniVals[typedKey] = manageAuctionDetails[typedKey] as string &
+            string[];
+        }
+      }
+      setInitialValues(iniVals);
+    }
+  }, [manageAuctionForm, manageAuctionDetails]);
 
   return (
     <>
       <div className="contact-form-container m-8 w-10/12 sm:w-8/12 md:w-6/12 lg:w-5/12">
         <Card>
           <CardHeader>
-            <h3 className="text-3xl font-semibold">Create Auction</h3>
+            <h3 className="text-3xl font-semibold">
+              Manage Auction{' '}
+              {initialValues?.auctionStatus !== 'ACTIVE' &&
+                `(${initialValues?.auctionStatus})`}
+            </h3>
           </CardHeader>
           <CardContent>
-            <Form {...createAuctionForm}>
+            <Form {...manageAuctionForm}>
               <form
-                onSubmit={createAuctionForm.handleSubmit(
-                  showDialogOnSubmit,
-                  () => {
-                    toast.error('Please fill all the fields!');
-                  }
-                )}
+                onSubmit={manageAuctionForm.handleSubmit(onSubmit, () => {
+                  toast.error('Please fill all the fields!');
+                })}
                 className="space-y-8"
               >
                 {/* TITLE FIELD*/}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem>
@@ -323,7 +467,7 @@ export default function CreateAuctionForm() {
 
                 {/* DESCRIPTION */}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="description"
                   render={({ field }) => (
                     <FormItem>
@@ -348,7 +492,7 @@ export default function CreateAuctionForm() {
 
                 {/* CATEGORY FIELD */}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="category"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
@@ -386,7 +530,7 @@ export default function CreateAuctionForm() {
                                     value={category.label}
                                     key={category.value}
                                     onSelect={() => {
-                                      createAuctionForm.setValue(
+                                      manageAuctionForm.setValue(
                                         'category',
                                         category.value
                                       );
@@ -420,7 +564,7 @@ export default function CreateAuctionForm() {
                 <div className="flex flex-col gap-8 *:w-full sm:flex-row">
                   {/* IMAGE 1 FIELD*/}
                   <FormField
-                    control={createAuctionForm.control}
+                    control={manageAuctionForm.control}
                     name="img1"
                     render={({ field: { onChange } }) => (
                       <FormItem>
@@ -483,7 +627,7 @@ export default function CreateAuctionForm() {
 
                   {/* IMAGE 2 FIELD*/}
                   <FormField
-                    control={createAuctionForm.control}
+                    control={manageAuctionForm.control}
                     name="img2"
                     render={({ field: { onChange } }) => (
                       <FormItem>
@@ -545,10 +689,10 @@ export default function CreateAuctionForm() {
                 </div>
 
                 {/* IMAGES: 3 & 4 FIELDs*/}
-                <div className="flex flex-col gap-8 *:w-full md:flex-row">
+                <div className="flex flex-col gap-8 *:w-full sm:flex-row">
                   {/* IMAGE 3 FIELD*/}
                   <FormField
-                    control={createAuctionForm.control}
+                    control={manageAuctionForm.control}
                     name="img3"
                     render={({ field: { onChange } }) => (
                       <FormItem>
@@ -608,7 +752,7 @@ export default function CreateAuctionForm() {
 
                   {/* IMAGE 4 FIELD*/}
                   <FormField
-                    control={createAuctionForm.control}
+                    control={manageAuctionForm.control}
                     name="img4"
                     render={({ field: { onChange } }) => (
                       <FormItem>
@@ -669,7 +813,7 @@ export default function CreateAuctionForm() {
 
                 {/* STARTING DATE FIELD*/}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="startingDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
@@ -685,6 +829,11 @@ export default function CreateAuctionForm() {
                                 'w-[240px] pl-3 text-left font-normal',
                                 !field.value && 'text-muted-foreground'
                               )}
+                              disabled={
+                                manageAuctionDetails?.auctionStatus !==
+                                  'UPCOMING' ||
+                                initialValues?.auctionStatus !== 'UPCOMING'
+                              }
                             >
                               {field.value ? (
                                 formatDate(field.value, 'PPP')
@@ -699,8 +848,8 @@ export default function CreateAuctionForm() {
                           <Calendar
                             mode="single"
                             selected={field.value}
-                            today={createAuctionForm.getValues().startingDate}
                             onSelect={field.onChange}
+                            today={manageAuctionForm.getValues().startingDate}
                             disabled={(date) =>
                               date <
                                 new Date(new Date().setHours(0, 0, 0, 0)) ||
@@ -720,7 +869,7 @@ export default function CreateAuctionForm() {
 
                 {/* ENDING DATE FIELD*/}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="endingDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
@@ -730,7 +879,7 @@ export default function CreateAuctionForm() {
                       <Popover>
                         <PopoverTrigger
                           asChild
-                          disabled={!createAuctionForm.getValues().startingDate}
+                          disabled={!manageAuctionForm.getValues().startingDate}
                         >
                           <FormControl>
                             <Button
@@ -739,6 +888,12 @@ export default function CreateAuctionForm() {
                                 'w-[240px] pl-3 text-left font-normal',
                                 !field.value && 'text-muted-foreground'
                               )}
+                              disabled={
+                                manageAuctionDetails?.auctionStatus !==
+                                  'ACTIVE' &&
+                                manageAuctionDetails?.auctionStatus !==
+                                  'UPCOMING'
+                              }
                             >
                               {field.value ? (
                                 formatDate(field.value, 'PPP')
@@ -753,12 +908,12 @@ export default function CreateAuctionForm() {
                           <Calendar
                             mode="single"
                             selected={field.value}
-                            today={createAuctionForm.getValues().startingDate}
+                            today={manageAuctionForm.getValues().startingDate}
                             onSelect={field.onChange}
                             disabled={(date) => {
                               const selectedDate = new Date(date);
                               const startingDate = new Date(
-                                createAuctionForm.getValues().startingDate
+                                manageAuctionForm.getValues().startingDate
                               );
                               const minAllowedDate = new Date(startingDate);
                               minAllowedDate.setDate(
@@ -787,7 +942,7 @@ export default function CreateAuctionForm() {
 
                 {/* BASE PRICE FIELD*/}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="basePrice"
                   render={({ field }) => (
                     <FormItem>
@@ -812,7 +967,7 @@ export default function CreateAuctionForm() {
 
                 {/* BUY PRICE FIELD*/}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="buyPrice"
                   render={({ field }) => (
                     <FormItem>
@@ -824,9 +979,9 @@ export default function CreateAuctionForm() {
                           type="number"
                           placeholder="buy price"
                           min={Number(
-                            ++createAuctionForm.getValues().basePrice
+                            ++manageAuctionForm.getValues().basePrice
                           )}
-                          disabled={!createAuctionForm.getValues().basePrice}
+                          disabled={!manageAuctionForm.getValues().basePrice}
                           {...field}
                         />
                       </FormControl>
@@ -840,7 +995,7 @@ export default function CreateAuctionForm() {
 
                 {/* CITY FIELD*/}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="city"
                   render={({ field }) => (
                     <FormItem>
@@ -857,7 +1012,7 @@ export default function CreateAuctionForm() {
 
                 {/* STATE FIELD*/}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="state"
                   render={({ field }) => (
                     <FormItem>
@@ -874,7 +1029,7 @@ export default function CreateAuctionForm() {
 
                 {/* COUNTRY FIELD */}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="country"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
@@ -912,7 +1067,7 @@ export default function CreateAuctionForm() {
                                     value={country.label}
                                     key={country.value}
                                     onSelect={() => {
-                                      createAuctionForm.setValue(
+                                      manageAuctionForm.setValue(
                                         'country',
                                         country.value
                                       );
@@ -941,7 +1096,7 @@ export default function CreateAuctionForm() {
 
                 {/* ZIPCODE FIELD */}
                 <FormField
-                  control={createAuctionForm.control}
+                  control={manageAuctionForm.control}
                   name="zipcode"
                   render={({ field }) => (
                     <FormItem>
@@ -959,30 +1114,34 @@ export default function CreateAuctionForm() {
                     </FormItem>
                   )}
                 />
-                <div className="items-top flex space-x-2">
-                  <Checkbox
-                    id="terms1"
-                    onCheckedChange={() => setIsChecked(!isChecked)}
-                  />
-                  <div className="grid gap-1.5 leading-none">
-                    <label
-                      htmlFor="terms1"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                <div className="flex gap-2">
+                  {initialValues?.auctionStatus !== 'SOLD' && (
+                    <Button
+                      type="button"
+                      className="w-full bg-red-500 text-white"
+                      variant={'destructive'}
+                      disabled={
+                        deleteAuctionMutation.isPending ||
+                        updateAuctionDetailsMutation.isPending
+                      }
+                      onClick={() => {
+                        setDeleteDialogOpen(true);
+                      }}
                     >
-                      Accept terms and conditions
-                    </label>
-                    <p className="text-sm text-muted-foreground">
-                      You agree to our Terms of Service and Privacy Policy.
-                    </p>
-                  </div>
-                </div>
-                <div>
+                      Delete
+                    </Button>
+                  )}
                   <Button
                     type="submit"
                     className="w-full"
-                    disabled={!isChecked || createAuctionMutation.isPending}
+                    disabled={
+                      deleteAuctionMutation.isPending ||
+                      updateAuctionDetailsMutation.isPending ||
+                      (manageAuctionDetails?.auctionStatus !== 'ACTIVE' &&
+                        manageAuctionDetails?.auctionStatus !== 'UPCOMING')
+                    }
                   >
-                    Create
+                    Save
                   </Button>
                 </div>
               </form>
@@ -990,48 +1149,37 @@ export default function CreateAuctionForm() {
           </CardContent>
         </Card>
       </div>
-      <Dialog open={ruleOpen} onOpenChange={setIsRuleOpen}>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>ℹ️ Basic information</DialogTitle>
+            <DialogTitle>🗑️ Delete {initialValues?.title}?</DialogTitle>
           </DialogHeader>
           <DialogDescription>
-            The auction can only be edited till the time there are no bids made
-            on it.
+            Are you sure you want to delete the auction? This action cannot be
+            undone!
           </DialogDescription>
           <DialogFooter className="gap-2 *:w-full">
-            <Button variant={'outline'}>Cancel</Button>
             <Button
+              variant="outline"
+              className="w-full"
               onClick={() => {
-                setIsRuleOpen(false);
-                onSubmit(createAuctionForm.getValues());
+                setDeleteDialogOpen(false);
               }}
-              variant={'default'}
             >
-              Agree & Create
+              Cancel
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={open} onOpenChange={setIsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>🎉 Auction Created</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            You auction has been successfully created!
-          </DialogDescription>
-          <DialogFooter className="gap-2">
-            <Link href={`/auctions/manage/${auctionId}`} className="w-full">
-              <Button variant={'outline'} className="w-full">
-                Manage
-              </Button>
-            </Link>
-            <Link href={`/auctions/view/${auctionId}`} className="w-full">
-              <Button variant={'default'} className="w-full">
-                View
-              </Button>
-            </Link>
+            <Button
+              variant={'destructive'}
+              className="bg-red-500 text-white"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                deleteAuctionMutation.mutate(auctionId);
+                const currentToastId = toast.loading('Deleting auction...');
+                setToastId(currentToastId);
+              }}
+            >
+              Confirm
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

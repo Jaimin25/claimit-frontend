@@ -80,7 +80,9 @@ export default function DashboardAuctionCard({
               </div>
             </CardContent>
             <CardFooter className="space-x-4">
-              <Button variant={'default'}>Manage</Button>
+              <Link href={`/auctions/manage/${auction.id}`}>
+                <Button variant={'default'}>Manage</Button>
+              </Link>
               <Link href={`/auctions/view/${auction.id}`}>
                 <Button variant={'secondary'}>View</Button>
               </Link>

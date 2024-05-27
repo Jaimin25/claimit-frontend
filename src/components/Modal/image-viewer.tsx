@@ -14,7 +14,7 @@ export default function ImageViewer({
 }) {
   return (
     <Dialog onOpenChange={setOpenChange} open={open}>
-      <DialogContent className="border-none p-0">
+      <DialogContent className="w-full max-w-5xl border-none p-0">
         <Image
           src={imgUrl}
           width={100}
