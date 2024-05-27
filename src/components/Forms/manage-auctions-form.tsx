@@ -259,7 +259,7 @@ export default function ManageAuctionForm({
           if (!unWantedKeys.includes(key as UnAllowedKeys)) {
             const typedKey = key as keyof ManageAuctionProps;
             if (typedKey === 'startingDate' || typedKey === 'endingDate') {
-              iniVals[typedKey] = new Date(auctionDetails[typedKey]).toString();
+              iniVals[typedKey] = auctionDetails[typedKey];
             } else {
               iniVals[typedKey] = auctionDetails[typedKey] as string & string[];
             }
@@ -310,10 +310,12 @@ export default function ManageAuctionForm({
         const typedKey = key as keyof z.infer<typeof manageAuctionFormSchema>;
         if (typedKey === 'endingDate' || typedKey === 'startingDate') {
           if (
-            new Date(values[typedKey]).toLocaleDateString() !==
-            new Date(String(initialValues![typedKey])).toLocaleDateString()
+            new Date(values[typedKey]).toDateString() !==
+            new Date(String(initialValues![typedKey])).toDateString()
           ) {
-            changedFields[typedKey] = String(values[typedKey]);
+            changedFields[typedKey] = new Date(
+              String(values[typedKey])
+            ).toUTCString();
           }
         } else if (
           String(values[typedKey]) !== String(initialValues[typedKey])
