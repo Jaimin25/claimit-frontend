@@ -69,7 +69,7 @@ export default function FeatureSection() {
             : 'No auctions found!'}
       </div>
       <div className="flex w-full justify-center">
-        <Link href={'/marketplace'}>
+        <Link href={'/marketplace?offset=0'}>
           <Button variant={'link'} className="text-lg">
             Explore More →
           </Button>

@@ -1,5 +1,6 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'sonner';
 
@@ -37,7 +38,9 @@ interface FilterProps {
 interface MarketplaceAuctionContextProps {
   auctions: AuctionDetailsProps[] | null;
   loading: boolean;
-  setFilterValue: (value: FilterProps) => void;
+  setFilterValue: (value: FilterProps, type: string) => void;
+  pagesCount: number | undefined;
+  setAuctionsOffset: (value: number) => void;
 }
 
 const MarketplaceAuctionContext = createContext<MarketplaceAuctionContextProps>(
@@ -45,6 +48,8 @@ const MarketplaceAuctionContext = createContext<MarketplaceAuctionContextProps>(
     auctions: null,
     loading: false,
     setFilterValue: () => {},
+    pagesCount: 1,
+    setAuctionsOffset: () => {},
   }
 );
 
@@ -52,18 +57,16 @@ export const useMarketplaceAuction = () => {
   return useContext(MarketplaceAuctionContext);
 };
 
-const fetchMarketplaceAuctions = async () => {
+const fetchMarketplaceAuctions = async ({
+  filterValues,
+  offset,
+}: {
+  filterValues: FilterProps;
+  offset: number;
+}) => {
   return await axios.get(
-    `${Config.APP_URL}/api/marketplace/fetchMarketplaceAuctions`
-  );
-};
-
-const filterMarketplaceAuctions = async (value: FilterProps) => {
-  return await axios.get(
-    `${Config.APP_URL}/api/marketplace/filterMarketplaceAuctions`,
-    {
-      params: value,
-    }
+    `${Config.APP_URL}/api/marketplace/fetchMarketplaceAuctionsWithFilter`,
+    { params: { offset, ...filterValues } }
   );
 };
 
@@ -72,10 +75,17 @@ export function MarketplaceAuctionsProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [auctions, setAuctions] = useState<AuctionDetailsProps[] | null>(null);
-  const [tempAuctions, setTempAuctions] = useState<
-    AuctionDetailsProps[] | null
-  >();
+  const [filterVal, setFilterVal] = useState<FilterProps>({
+    category: '',
+    searchInput: '',
+    sortTypeAuction: '',
+    sortTypePrice: '',
+  });
+  const [pagesCount, setPagesCount] = useState<number>();
 
   const fetchAllMarketplaceAuctionsMutation = useMutation({
     mutationFn: fetchMarketplaceAuctions,
@@ -84,44 +94,58 @@ export function MarketplaceAuctionsProvider({
 
       if (data.statusCode === 200) {
         setAuctions(data.allAuctions);
-      }
-    },
-    onError: (error) => toast.error(`${error.name}: ${error.message}`),
-  });
-
-  const filterMarketplaceAuctionMutation = useMutation({
-    mutationFn: filterMarketplaceAuctions,
-    onSuccess: async (res) => {
-      const data = await res.data;
-      setTempAuctions(tempAuctions ? tempAuctions : auctions);
-      if (data.statusCode === 200) {
-        setAuctions(data.filteredAuctions);
+        setPagesCount(data.pages as number);
       } else {
-        setAuctions([]);
+        toast.error(data.statusMessage);
       }
     },
     onError: (error) => toast.error(`${error.name}: ${error.message}`),
   });
 
   useEffect(() => {
-    fetchAllMarketplaceAuctionsMutation.mutate();
+    console.log(filterVal);
+    fetchAllMarketplaceAuctionsMutation.mutate({
+      filterValues: filterVal,
+      offset: searchParams.get('offset')
+        ? Number(searchParams.get('offset'))
+        : 0,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
-  const setFilterValue = (value: FilterProps) => {
-    console.log(value);
-    if (
-      !value.searchInput &&
-      !value.category &&
-      !value.sortTypeAuction &&
-      !value.sortTypePrice
-    ) {
-      if (tempAuctions) {
-        setAuctions(tempAuctions);
+  const setFilterValue = (value: FilterProps, type: string) => {
+    // console.log(value);
+    if (type === 'search') {
+      if (
+        !value.searchInput &&
+        !value.category &&
+        !value.sortTypeAuction &&
+        !value.sortTypePrice
+      ) {
+        router.push(`/marketplace?offset=0`);
+        setFilterVal(value);
+        return;
       }
-      return;
+      setFilterVal(value);
+      fetchAllMarketplaceAuctionsMutation.mutate({
+        filterValues: value,
+        offset: 0,
+      });
+    } else {
+      setFilterVal(value);
+      fetchAllMarketplaceAuctionsMutation.mutate({
+        filterValues: value,
+        offset: 0,
+      });
     }
-    filterMarketplaceAuctionMutation.mutate(value);
+  };
+
+  const setAuctionsOffset = (value: number) => {
+    router.push(`/marketplace?offset=${value}`);
+    // fetchAllMarketplaceAuctionsMutation.mutate({
+    //   filterValues: filterVal,
+    //   offset: value,
+    // });
   };
 
   return (
@@ -129,10 +153,10 @@ export function MarketplaceAuctionsProvider({
       value={{
         auctions,
         loading:
-          fetchAllMarketplaceAuctionsMutation.isPending ||
-          auctions === null ||
-          filterMarketplaceAuctionMutation.isPending,
+          fetchAllMarketplaceAuctionsMutation.isPending || auctions === null,
         setFilterValue,
+        pagesCount,
+        setAuctionsOffset,
       }}
     >
       {children}
