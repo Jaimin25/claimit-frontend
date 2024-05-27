@@ -28,6 +28,7 @@ async function uploadAuctionImage(file: File, publicId: string) {
       cloud_name: Config.CLOUDINARY_NAME,
       api_key: Config.CLOUDINARY_API_KEY,
       api_secret: Config.CLOUDINARY_API_SECRET,
+      secure: true,
     });
     cloudinary.uploader
       .upload_stream(
@@ -112,7 +113,7 @@ export async function POST(req: NextRequest) {
     const uploadImg1 = await uploadAuctionImage(img1, 'img1_' + auctionId);
 
     if (uploadImg1.status === true) {
-      imgUrls.push((uploadImg1.message as UploadApiResponse).url);
+      imgUrls.push((uploadImg1.message as UploadApiResponse).secure_url);
     }
   }
 
@@ -120,7 +121,7 @@ export async function POST(req: NextRequest) {
     const uploadImg2 = await uploadAuctionImage(img2, 'img2_' + auctionId);
 
     if (uploadImg2.status === true) {
-      imgUrls.push((uploadImg2.message as UploadApiResponse).url);
+      imgUrls.push((uploadImg2.message as UploadApiResponse).secure_url);
     }
   }
 
@@ -128,7 +129,7 @@ export async function POST(req: NextRequest) {
     const uploadImg3 = await uploadAuctionImage(img3, 'img3_' + auctionId);
 
     if (uploadImg3.status === true) {
-      imgUrls.push((uploadImg3.message as UploadApiResponse).url);
+      imgUrls.push((uploadImg3.message as UploadApiResponse).secure_url);
     }
   }
 
@@ -136,7 +137,7 @@ export async function POST(req: NextRequest) {
     const uploadImg4 = await uploadAuctionImage(img4, 'img4_' + auctionId);
 
     if (uploadImg4.status === true) {
-      imgUrls.push((uploadImg4.message as UploadApiResponse).url);
+      imgUrls.push((uploadImg4.message as UploadApiResponse).secure_url);
     }
   }
 

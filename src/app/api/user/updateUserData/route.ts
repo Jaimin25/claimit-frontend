@@ -29,6 +29,7 @@ async function uploadProfilePic(file: File, publicId: string) {
       cloud_name: Config.CLOUDINARY_NAME,
       api_key: Config.CLOUDINARY_API_KEY,
       api_secret: Config.CLOUDINARY_API_SECRET,
+      secure: true,
     });
     cloudinary.uploader
       .upload_stream(
@@ -90,8 +91,8 @@ export async function POST(req: NextRequest) {
           });
         }
 
-        if (uploadImg.status && uploadImg.message!.url) {
-          formData.append('profilePicUrl', uploadImg.message?.url);
+        if (uploadImg.status && uploadImg.message!.secure_url) {
+          formData.append('profilePicUrl', uploadImg.message?.secure_url);
         }
       } else {
         return NextResponse.json({
