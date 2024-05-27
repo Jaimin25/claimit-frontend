@@ -257,7 +257,11 @@ export default function CreateAuctionForm() {
       formData.append('img4', values.img4);
     }
 
-    const json = JSON.stringify(values);
+    const json = JSON.stringify({
+      ...values,
+      startingDate: values.startingDate.toDateString(),
+      endingDate: values.endingDate.toDateString(),
+    });
     formData.append('auctionData', json);
 
     createAuctionMutation.mutate(formData);
@@ -753,7 +757,11 @@ export default function CreateAuctionForm() {
                           <Calendar
                             mode="single"
                             selected={field.value}
-                            today={createAuctionForm.getValues().startingDate}
+                            today={
+                              new Date(
+                                createAuctionForm.getValues().startingDate
+                              )
+                            }
                             onSelect={field.onChange}
                             disabled={(date) => {
                               const selectedDate = new Date(date);
