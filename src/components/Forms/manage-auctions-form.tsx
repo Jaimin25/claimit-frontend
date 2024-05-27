@@ -315,7 +315,7 @@ export default function ManageAuctionForm({
           ) {
             changedFields[typedKey] = new Date(
               String(values[typedKey])
-            ).toUTCString();
+            ).toDateString();
           }
         } else if (
           String(values[typedKey]) !== String(initialValues[typedKey])
