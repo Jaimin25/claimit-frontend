@@ -1115,20 +1115,22 @@ export default function ManageAuctionForm({
                   )}
                 />
                 <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    className="w-full bg-red-500 text-white"
-                    variant={'destructive'}
-                    disabled={
-                      deleteAuctionMutation.isPending ||
-                      updateAuctionDetailsMutation.isPending
-                    }
-                    onClick={() => {
-                      setDeleteDialogOpen(true);
-                    }}
-                  >
-                    Delete
-                  </Button>
+                  {initialValues?.auctionStatus !== 'SOLD' && (
+                    <Button
+                      type="button"
+                      className="w-full bg-red-500 text-white"
+                      variant={'destructive'}
+                      disabled={
+                        deleteAuctionMutation.isPending ||
+                        updateAuctionDetailsMutation.isPending
+                      }
+                      onClick={() => {
+                        setDeleteDialogOpen(true);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  )}
                   <Button
                     type="submit"
                     className="w-full"

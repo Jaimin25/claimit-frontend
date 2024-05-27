@@ -26,8 +26,9 @@ export default function AuctionClaimSection({
 }) {
   const [endTime, setEndTime] = useState('--:--:--');
 
+  const currentDate = new Date().toString();
   useEffect(() => {
-    if (deadline && auctionStatus === 'ACTIVE') {
+    if (deadline && auctionStatus === 'ACTIVE' && currentDate <= deadline) {
       const interval = setInterval(() => {
         setEndTime(
           getAuctionEndTime(deadline.toString()).replace('(Until ends)', '')
@@ -36,7 +37,7 @@ export default function AuctionClaimSection({
 
       return () => clearInterval(interval);
     }
-  }, [deadline, auctionStatus]);
+  }, [deadline, auctionStatus, currentDate]);
 
   if (isLoading) {
     return <AuctionClaimSkeletonSkele />;
@@ -47,10 +48,16 @@ export default function AuctionClaimSection({
       <Card className="w-full">
         <CardHeader>
           <h2 className="text-2xl font-semibold">{title}</h2>
-          <Button variant={'outline'} disabled={auctionStatus !== 'ACTIVE'}>
+          <Button
+            variant={'outline'}
+            disabled={auctionStatus !== 'ACTIVE' || currentDate >= deadline}
+          >
             Bid
           </Button>
-          <Button variant={'default'} disabled={auctionStatus !== 'ACTIVE'}>
+          <Button
+            variant={'default'}
+            disabled={auctionStatus !== 'ACTIVE' || currentDate >= deadline}
+          >
             Buy {auctionStatus === 'SOLD' ? '(SOLD)' : `(₹${buyPrice})`}
           </Button>
         </CardHeader>
