@@ -128,7 +128,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     if (!user) {
       mutation.mutate();
       authMutation.mutate();
-      fetchUserBalanceMutation.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

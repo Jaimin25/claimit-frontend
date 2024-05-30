@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CommandList } from 'cmdk';
 import { FaCheck } from 'react-icons/fa';
@@ -159,6 +159,12 @@ export default function Wallet() {
     setToastId(currentToastId);
     expireSessionMutation.mutate(stripeSessionId as string);
   };
+
+  useEffect(() => {
+    if (!userBalance) {
+      refreshUserBalance();
+    }
+  }, [userBalance, refreshUserBalance]);
 
   if (stripeClientSecret && stripeSessionId) {
     return (

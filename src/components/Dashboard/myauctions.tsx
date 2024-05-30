@@ -127,6 +127,10 @@ export default function MyAuctions() {
                   </div>
                 )}
               </div>
+            ) : !userAuctions && !fetchUserAuctionsMutation.isPending ? (
+              <div className="flex h-52 items-center justify-center">
+                No auctions found!
+              </div>
             ) : (
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {Array(4)
