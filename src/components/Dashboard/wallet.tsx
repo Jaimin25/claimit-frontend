@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import axios from 'axios';
 import { CommandList } from 'cmdk';
 import { FaCheck } from 'react-icons/fa';
@@ -52,6 +51,7 @@ import {
   DialogTitle,
 } from '../ui/dialog';
 import { Input } from '../ui/input';
+import { Skeleton } from '../ui/skeleton';
 
 const curreny = [
   {
@@ -84,21 +84,16 @@ const expireSession = async (sessionId: string) => {
 };
 
 export default function Wallet() {
-  const { user } = useUser();
+  const { user, userBalance, refreshUserBalance } = useUser();
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>();
   const [stripeSessionId, setStripeSessionId] = useState<string | null>();
   const [amountDialogOpen, setAmountDialogOpen] = useState(false);
   const [amount, setAmount] = useState<number>();
-  const searchParams = useSearchParams();
 
   const [open, setOpen] = useState(false);
   const [currencyValue, setCurrencyValue] = useState('');
 
   const [toastId, setToastId] = useState<string | number>();
-
-  useEffect(() => {
-    console.log(searchParams.get('sessionId'));
-  }, [searchParams]);
 
   const fetchStripeClientSecretMutation = useMutation({
     mutationFn: fetchStripeClientSecret,
@@ -196,9 +191,26 @@ export default function Wallet() {
           <CardContent className="space-y-8">
             {user && !user?.identityVerified && <IdentityVerificationForm />}
             <div>
-              <h2 className="text-xl font-semibold">Balance</h2>
+              <div className="flex items-center  gap-2">
+                <h2 className="text-xl font-semibold">Balance</h2>
+                <Button
+                  variant={'outline'}
+                  onClick={refreshUserBalance}
+                  disabled={!userBalance}
+                >
+                  <MdRefresh size={20} />
+                </Button>
+              </div>
               <div className="py-6">
-                Current Balanace:<p className="text-lg font-semibold">₹99999</p>
+                Current Balanace:{' '}
+                {userBalance ? (
+                  <p className="text-lg font-semibold">
+                    ₹
+                    {new Intl.NumberFormat('en-IN').format(Number(userBalance))}
+                  </p>
+                ) : (
+                  <Skeleton className="h-6 w-1/2 sm:w-1/4 md:w-1/5" />
+                )}
               </div>
               <div className="space-x-2">
                 <Button
@@ -213,7 +225,7 @@ export default function Wallet() {
             <div>
               <div className="flex items-center justify-between gap-2">
                 <h2 className="text-xl font-semibold">Transactions </h2>
-                <Button variant={'ghost'}>
+                <Button variant={'outline'}>
                   <MdRefresh size={20} />
                 </Button>
               </div>

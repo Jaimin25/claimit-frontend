@@ -39,7 +39,9 @@ type UserUpdateProps = Omit<
 interface UserContextProps {
   user: UserProps | undefined | null;
   isAuthenticated: boolean;
+  userBalance: string | undefined;
   fetchUser: () => void;
+  refreshUserBalance: () => void;
   signOut: () => void;
   updateUserData: (user: UserUpdateProps) => void;
 }
@@ -47,7 +49,9 @@ interface UserContextProps {
 const UserContext = createContext<UserContextProps>({
   user: null,
   isAuthenticated: false,
+  userBalance: '',
   fetchUser: () => {},
+  refreshUserBalance: () => {},
   signOut: () => {},
   updateUserData: () => {},
 });
@@ -68,8 +72,15 @@ const checkAuthentication = async () => {
   });
 };
 
+const fetchUserBal = async () => {
+  return await axios.post(`${Config.APP_URL}/api/user/fetchUserBalance`, '', {
+    withCredentials: true,
+  });
+};
+
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProps | null>();
+  const [userBalance, setUserBalance] = useState<string>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const mutation = useMutation({
@@ -100,10 +111,24 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     onError: (error) => toast.error(`${error.name}: ${error.message}`),
   });
 
+  const fetchUserBalanceMutation = useMutation({
+    mutationFn: fetchUserBal,
+    onSuccess: async (res) => {
+      const data = await res.data;
+      if (data.statusCode === 200) {
+        setUserBalance(data.userBalance);
+      } else {
+        toast.error(data.statusMessage);
+      }
+    },
+    onError: (error) => toast.error(`${error.name}: ${error.message}`),
+  });
+
   useEffect(() => {
     if (!user) {
       mutation.mutate();
       authMutation.mutate();
+      fetchUserBalanceMutation.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -132,9 +157,22 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setUser(newUserData);
   };
 
+  const refreshUserBalance = () => {
+    setUserBalance(undefined);
+    fetchUserBalanceMutation.mutate();
+  };
+
   return (
     <UserContext.Provider
-      value={{ user, fetchUser, isAuthenticated, signOut, updateUserData }}
+      value={{
+        user,
+        userBalance,
+        fetchUser,
+        refreshUserBalance,
+        isAuthenticated,
+        signOut,
+        updateUserData,
+      }}
     >
       {children}
     </UserContext.Provider>
