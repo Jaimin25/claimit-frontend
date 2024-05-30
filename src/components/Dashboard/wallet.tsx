@@ -446,7 +446,7 @@ export default function Wallet() {
               variant={'default'}
               onClick={onWithdrawProceed}
               disabled={
-                withdrawFromBalanceMutation.isPending &&
+                withdrawFromBalanceMutation.isPending ||
                 Number(userBalance) - amount! <= 0
               }
             >
