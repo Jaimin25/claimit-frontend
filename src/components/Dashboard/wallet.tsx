@@ -73,6 +73,16 @@ const fetchStripeClientSecret = async (value: {
   );
 };
 
+const withdrawFromBalance = async (amount: number) => {
+  return await axios.post(
+    `${Config.APP_URL}/api/stripe/withdrawFromBalance`,
+    { amount },
+    {
+      withCredentials: true,
+    }
+  );
+};
+
 const expireSession = async (sessionId: string) => {
   return await axios.post(
     `${Config.APP_URL}/api/stripe/expireSession`,
@@ -88,6 +98,7 @@ export default function Wallet() {
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>();
   const [stripeSessionId, setStripeSessionId] = useState<string | null>();
   const [amountDialogOpen, setAmountDialogOpen] = useState(false);
+  const [withdrawDialogOpen, setWithdrawDialogOpen] = useState(false);
   const [amount, setAmount] = useState<number>();
 
   const [open, setOpen] = useState(false);
@@ -99,12 +110,27 @@ export default function Wallet() {
     mutationFn: fetchStripeClientSecret,
     onSuccess: async (res) => {
       const data = await res.data;
-      console.log(data);
+
       if (data.statusCode === 200) {
         setStripeClientSecret(data.clientSecret);
         setStripeSessionId(data.sessionId);
         setAmountDialogOpen(false);
         toast.success('Payment session created!', { id: toastId });
+      } else {
+        toast.error(data.statusMessage, { id: toastId });
+      }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, { id: toastId }),
+  });
+
+  const withdrawFromBalanceMutation = useMutation({
+    mutationFn: withdrawFromBalance,
+    onSuccess: async (res) => {
+      const data = await res.data;
+
+      if (data.statusCode === 200) {
+        toast.success('Payment withdrawn!', { id: toastId });
       } else {
         toast.error(data.statusMessage, { id: toastId });
       }
@@ -142,16 +168,29 @@ export default function Wallet() {
       return toast.error('Please enter a valid amount');
     }
 
-    const currentToastId = toast.loading(
-      'Please wait while creating session...<br />Do not close the window!'
-    );
-    setToastId(currentToastId);
     fetchStripeClientSecretMutation.mutate({
       amount: amount,
       currency: currencyValue,
     });
+    const currentToastId = toast.loading(
+      'Please wait while creating session...<br />Do not close the window!'
+    );
+    setToastId(currentToastId);
   };
 
+  const onWithdrawProceed = () => {
+    if (!amount) {
+      return toast.error('Please enter a valid amount');
+    }
+
+    withdrawFromBalanceMutation.mutate(amount);
+    setWithdrawDialogOpen(false);
+    setAmount(undefined);
+    const currentToastId = toast.loading(
+      'Processing, please wait...<br />Do not close the window!'
+    );
+    setToastId(currentToastId);
+  };
   const expireCurrentSession = () => {
     const currentToastId = toast.loading(
       'Please wait while cancelling current session...<br />Do not close the window!'
@@ -165,7 +204,7 @@ export default function Wallet() {
       refreshUserBalance();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userBalance]);
+  }, []);
 
   if (stripeClientSecret && stripeSessionId) {
     return (
@@ -203,14 +242,14 @@ export default function Wallet() {
                 <Button
                   variant={'outline'}
                   onClick={refreshUserBalance}
-                  disabled={!userBalance}
+                  disabled={!userBalance && userBalance === '0'}
                 >
                   <MdRefresh size={20} />
                 </Button>
               </div>
               <div className="py-6">
                 Current Balanace:{' '}
-                {userBalance ? (
+                {userBalance || userBalance! >= '0' ? (
                   <p className="text-lg font-semibold">
                     ₹
                     {new Intl.NumberFormat('en-IN').format(Number(userBalance))}
@@ -226,7 +265,14 @@ export default function Wallet() {
                 >
                   Add
                 </Button>
-                <Button variant={'secondary'}>Withdraw</Button>
+                <Button
+                  variant={'secondary'}
+                  onClick={() => {
+                    setWithdrawDialogOpen(true);
+                  }}
+                >
+                  Withdraw
+                </Button>
               </div>
             </div>
             <div>
@@ -279,8 +325,8 @@ export default function Wallet() {
           <DialogDescription>
             <div className="space-y-2">
               <p>
-                NOTE: You can only withdraw the money once there are no bids
-                from this account!
+                NOTE: You can only withdraw the money after deposit once the you
+                have no bids on active auctions!
               </p>
               <div className="flex items-center gap-2">
                 <Popover open={open} onOpenChange={setOpen}>
@@ -355,6 +401,54 @@ export default function Wallet() {
               variant={'default'}
               onClick={onProceed}
               disabled={fetchStripeClientSecretMutation.isPending}
+            >
+              Proceed
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={withdrawDialogOpen} onOpenChange={setWithdrawDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Withdraw amount</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            <div className="space-y-2">
+              <div className="text-lg font-semibold">
+                <p>
+                  Current Balance: ₹
+                  {new Intl.NumberFormat('en-IN').format(Number(userBalance))}
+                </p>
+                <p>
+                  Balance after withdraw: ₹
+                  {new Intl.NumberFormat('en-IN').format(
+                    Number(userBalance) - amount!
+                  )}
+                </p>
+              </div>
+              <Input
+                type="number"
+                placeholder="1000..."
+                value={amount}
+                min={0}
+                onChange={(e) => setAmount(Number(e.target.value))}
+              />
+            </div>
+          </DialogDescription>
+          <DialogFooter>
+            <Button
+              variant={'outline'}
+              onClick={() => setWithdrawDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant={'default'}
+              onClick={onWithdrawProceed}
+              disabled={
+                withdrawFromBalanceMutation.isPending &&
+                Number(userBalance) - amount! <= 0
+              }
             >
               Proceed
             </Button>
