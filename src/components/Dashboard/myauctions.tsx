@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
 import { toast } from 'sonner';
@@ -9,6 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import DashboardAuctionCard from '../Cards/dashboard-auction-card';
 import DashAuctionCardsSkele from '../Skeletons/dash-auction-cards-skeleton';
+import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Input } from '../ui/input';
 
@@ -128,8 +130,11 @@ export default function MyAuctions() {
                 )}
               </div>
             ) : !userAuctions && !fetchUserAuctionsMutation.isPending ? (
-              <div className="flex h-52 items-center justify-center">
-                No auctions found!
+              <div className="flex h-52 flex-col items-center justify-center gap-2">
+                <p>No auctions found!</p>
+                <Link href={'/auctions/create'}>
+                  <Button>Create one</Button>
+                </Link>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
