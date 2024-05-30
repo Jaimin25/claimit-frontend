@@ -164,7 +164,8 @@ export default function Wallet() {
     if (!userBalance) {
       refreshUserBalance();
     }
-  }, [userBalance, refreshUserBalance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userBalance]);
 
   if (stripeClientSecret && stripeSessionId) {
     return (
