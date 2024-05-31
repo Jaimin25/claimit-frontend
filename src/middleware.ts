@@ -49,5 +49,11 @@ async function checkAuthentication(request: NextRequest): Promise<boolean> {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/dashboard/:path*', '/signin', '/signup', '/auctions/create'],
+  matcher: [
+    '/dashboard/:path*',
+    '/payment/status',
+    '/signin',
+    '/signup',
+    '/auctions/create',
+  ],
 };
