@@ -8,6 +8,7 @@ import { LuChevronsUpDown } from 'react-icons/lu';
 import { MdRefresh } from 'react-icons/md';
 import { toast } from 'sonner';
 
+import TransactionTableSkeleton from '@/components/Skeletons/transactions-table-skeleton';
 import {
   Command,
   CommandEmpty,
@@ -20,15 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Config } from '@/lib/config';
 import { stripePromise } from '@/lib/stripe';
 import { cn } from '@/lib/utils';
@@ -38,10 +30,10 @@ import {
 } from '@stripe/react-stripe-js';
 import { useMutation } from '@tanstack/react-query';
 
-import IdentityVerificationForm from '../Forms/identity-verification-form';
-import { useUser } from '../Providers/user-provider';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
+import IdentityVerificationForm from '../../Forms/identity-verification-form';
+import { useUser } from '../../Providers/user-provider';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '../../ui/card';
 import {
   Dialog,
   DialogContent,
@@ -49,9 +41,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Skeleton } from '../ui/skeleton';
+} from '../../ui/dialog';
+import { Input } from '../../ui/input';
+import { Skeleton } from '../../ui/skeleton';
+
+import TransactionTable from './transaction-table';
 
 const curreny = [
   {
@@ -94,7 +88,13 @@ const expireSession = async (sessionId: string) => {
 };
 
 export default function Wallet() {
-  const { user, userBalance, refreshUserBalance } = useUser();
+  const {
+    user,
+    userBalance,
+    balanceTransactions,
+    refreshUserBalance,
+    refreshUserBalanceTransactions,
+  } = useUser();
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>();
   const [stripeSessionId, setStripeSessionId] = useState<string | null>();
   const [amountDialogOpen, setAmountDialogOpen] = useState(false);
@@ -143,7 +143,7 @@ export default function Wallet() {
     mutationFn: expireSession,
     onSuccess: async (res) => {
       const data = await res.data;
-      console.log(data);
+
       if (data.statusCode === 200) {
         setStripeClientSecret(null);
         setStripeSessionId(null);
@@ -191,6 +191,7 @@ export default function Wallet() {
     );
     setToastId(currentToastId);
   };
+
   const expireCurrentSession = () => {
     const currentToastId = toast.loading(
       'Please wait while cancelling current session...<br />Do not close the window!'
@@ -202,6 +203,9 @@ export default function Wallet() {
   useEffect(() => {
     if (!userBalance) {
       refreshUserBalance();
+    }
+    if (!balanceTransactions) {
+      refreshUserBalanceTransactions({ startingFrom: '', endingFrom: '' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -278,41 +282,51 @@ export default function Wallet() {
             <div>
               <div className="flex items-center justify-between gap-2">
                 <h2 className="text-xl font-semibold">Transactions </h2>
-                <Button variant={'outline'}>
+                <Button
+                  variant={'outline'}
+                  onClick={() => {
+                    refreshUserBalanceTransactions({
+                      startingFrom: '',
+                      endingFrom: '',
+                    });
+                  }}
+                >
                   <MdRefresh size={20} />
                 </Button>
               </div>
-              <Table>
-                <TableCaption>A list of your transacntions.</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Type</TableHead>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Time</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {Array(10)
-                    .fill(0)
-                    .map((_, i) => (
-                      <TableRow key={i}>
-                        <TableCell className="font-medium">
-                          {i % 2 === 0 ? 'Deposit' : 'Withdraw'}
-                        </TableCell>
-                        <TableCell>ipx_f24n234Dh2</TableCell>
-                        <TableCell>
-                          {i % 2 === 0 ? (
-                            <p className="text-green-500">+{i * 250}</p>
-                          ) : (
-                            <p className="text-red-500">-{i * 500}</p>
-                          )}
-                        </TableCell>
-                        <TableCell>10 May, 2024 10:09:00 PM</TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+              {balanceTransactions && balanceTransactions.length >= 0 ? (
+                <>
+                  <TransactionTable transactions={balanceTransactions} />
+                  <div className="flex w-full justify-end gap-2">
+                    <Button
+                      variant={'outline'}
+                      onClick={() => {
+                        refreshUserBalanceTransactions({
+                          endingFrom: balanceTransactions[0]?.id as string,
+                          startingFrom: '',
+                        });
+                      }}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      variant={'outline'}
+                      onClick={() => {
+                        refreshUserBalanceTransactions({
+                          endingFrom: '',
+                          startingFrom: balanceTransactions[
+                            balanceTransactions.length - 1
+                          ]?.id as string,
+                        });
+                      }}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <TransactionTableSkeleton rows={6} />
+              )}
             </div>
           </CardContent>
         </Card>
