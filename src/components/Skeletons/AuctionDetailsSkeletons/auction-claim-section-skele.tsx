@@ -11,10 +11,11 @@ export default function AuctionClaimSkeletonSkele() {
     <div className="w-full">
       <Card className="w-full">
         <CardHeader>
-          <Button variant={'outline'} disabled>
+          <Skeleton className="h-6 w-3/4" />
+          <Button variant={'default'} disabled>
             Bid
           </Button>
-          <Button variant={'default'} disabled>
+          <Button variant={'outline'} disabled>
             Buy{' '}
           </Button>
         </CardHeader>

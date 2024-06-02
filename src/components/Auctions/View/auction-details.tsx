@@ -61,6 +61,7 @@ const fetchAuctionDetails = async (auctionId: string) => {
 
 export default function AuctionDetails({ auctionId }: { auctionId: string }) {
   const [auctionDetails, setAuctionDetails] = useState<AuctionDetailsProps>();
+  const [totalBidders, setTotalBidders] = useState<number>();
   const [error, setError] = useState();
 
   const auctionDetailsMutation = useMutation({
@@ -69,6 +70,7 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
       const data = await res.data;
       if (data.statusCode === 200) {
         setAuctionDetails(data.auctionDetails);
+        setTotalBidders(data.totalBidders);
       } else {
         setError(data.statusMessage);
       }
@@ -122,11 +124,14 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
         <div className="flex w-full flex-col gap-8">
           <AuctionClaimSection
             isLoading={auctionDetailsMutation.isPending || !auctionDetails}
-            bidders={auctionDetails?.bids!.length as number}
+            auctionId={auctionId}
+            bidders={totalBidders! as number}
+            basePrice={Number(auctionDetails?.basePrice)}
             deadline={auctionDetails?.endingDate as string}
             auctionStatus={auctionDetails?.auctionStatus as string}
             buyPrice={auctionDetails?.buyPrice as string}
             title={auctionDetails?.title as string}
+            highestBid={Number(auctionDetails?.bids[0]?.amount)}
           />
           <AuctionBiddersSection
             isLoading={auctionDetailsMutation.isPending || !auctionDetails}
