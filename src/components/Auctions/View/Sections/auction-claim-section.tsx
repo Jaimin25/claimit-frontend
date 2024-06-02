@@ -54,7 +54,7 @@ export default function AuctionClaimSection({
         <CardHeader>
           <h2 className="text-2xl font-semibold">{title}</h2>
           <Button
-            variant={'outline'}
+            variant={'default'}
             disabled={
               auctionStatus !== 'ACTIVE' ||
               currentDate >= new Date(deadline).getTime()
@@ -63,7 +63,7 @@ export default function AuctionClaimSection({
             Bid
           </Button>
           <Button
-            variant={'default'}
+            variant={'outline'}
             disabled={
               auctionStatus !== 'ACTIVE' ||
               currentDate >= new Date(deadline).getTime()

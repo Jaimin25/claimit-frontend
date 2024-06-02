@@ -72,12 +72,12 @@ export default function AuctionCards({
       <CardFooter className="w-full space-x-4">
         <Link href={`/auctions/view/${auction.id}`} className="w-full">
           <Button variant={'outline'} className="w-full">
-            Bid
+            Buy
           </Button>
         </Link>
         <Link href={`/auctions/view/${auction.id}`} className="w-full">
           <Button variant={'default'} className="w-full">
-            Buy
+            Bid
           </Button>
         </Link>
       </CardFooter>
