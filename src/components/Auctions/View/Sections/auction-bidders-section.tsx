@@ -2,7 +2,6 @@ import React from 'react';
 
 import AuctionBidderSectionSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-bidders-section-skele';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { timeSince } from '@/lib/utils';
 
@@ -54,7 +53,7 @@ export default function AuctionBiddersSection({
                   </div>
                 ))
               : 'No Bidders!'}
-            {bids.length > 5 && <Button variant={'outline'}>View More</Button>}
+            {/* {bids.length > 5 && <Button variant={'outline'}>View More</Button>} */}
           </div>
         </CardContent>
       </Card>

@@ -318,7 +318,8 @@ export default function ManageAuctionForm({
             ).toDateString();
           }
         } else if (
-          String(values[typedKey]) !== String(initialValues[typedKey])
+          String(values[typedKey]).trim().toLowerCase() !==
+          String(initialValues[typedKey]).trim().toLowerCase()
         ) {
           changedFields[typedKey] = values[typedKey] as string & string[];
         }

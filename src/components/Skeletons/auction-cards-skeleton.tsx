@@ -40,10 +40,10 @@ export default function AuctionCardsSkeleton() {
       </CardContent>
       <CardFooter className="w-full space-x-4">
         <Button variant={'outline'} className="w-full" disabled>
-          Bid
+          Buy
         </Button>
         <Button variant={'default'} className="w-full" disabled>
-          Buy
+          Bid
         </Button>
       </CardFooter>
     </Card>
