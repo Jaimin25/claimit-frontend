@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -26,7 +25,6 @@ export default function AuctionBidderSectionSkele() {
                   </div>
                 </div>
               ))}
-            <Button variant={'outline'}>View More</Button>
           </div>
         </CardContent>
       </Card>

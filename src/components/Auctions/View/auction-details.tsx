@@ -75,7 +75,9 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
       const data = await res.data;
       if (data.statusCode === 200) {
         setAuctionDetails(data.auctionDetails);
-        setAuctionBidders(data.auctionDetails.bids);
+        setAuctionBidders(
+          data.auctionDetails.bids as AuctionDetailsProps['bids']
+        );
         setTotalBidders(data.totalBidders);
       } else {
         setError(data.statusMessage);
@@ -86,9 +88,13 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
 
   useEffect(() => {
     auctionDetailsMutation.mutate(auctionId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     socket?.on(`auction:${auctionId}:update_bids`, (data) => {
-      const newBidders = [...auctionBidders!];
-      newBidders[0] = JSON.parse(data);
+      const newBidders = [...auctionBidders];
+      newBidders.unshift(JSON.parse(data));
       setAuctionBidders(newBidders);
       setTotalBidders(totalBidders + 1);
     });
@@ -96,8 +102,7 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
     () => {
       socket?.off(`auction:${auctionId}:update_bids`);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socket, auctionId, auctionBidders, totalBidders]);
 
   if (error && error === 'No auction found with the provided id!') {
     return (
