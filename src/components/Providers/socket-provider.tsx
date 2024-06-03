@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { toast } from 'sonner';
 
 import { Config } from '@/lib/config';
 
@@ -24,10 +25,17 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
+    const toastId = toast.loading('Connecting to server...', {
+      description: 'It may take a while, please wait!',
+    });
     const newSocket = io(Config.BACKEND_URL);
 
     newSocket.on('connect', () => {
       setIsConnected(true);
+      toast.success('Connected to server!', {
+        id: toastId,
+        description: '',
+      });
     });
 
     newSocket.on('disconnect', () => {
