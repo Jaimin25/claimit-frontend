@@ -6,6 +6,7 @@ import { AiOutlineShop } from 'react-icons/ai';
 import { BiConfused } from 'react-icons/bi';
 import { toast } from 'sonner';
 
+import { useSocket } from '@/components/Providers/socket-provider';
 import { Button } from '@/components/ui/button';
 import { Config } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
@@ -60,8 +61,12 @@ const fetchAuctionDetails = async (auctionId: string) => {
 };
 
 export default function AuctionDetails({ auctionId }: { auctionId: string }) {
+  const { socket } = useSocket();
   const [auctionDetails, setAuctionDetails] = useState<AuctionDetailsProps>();
-  const [totalBidders, setTotalBidders] = useState<number>();
+  const [auctionBidders, setAuctionBidders] = useState<
+    AuctionDetailsProps['bids']
+  >([]);
+  const [totalBidders, setTotalBidders] = useState<number>(0);
   const [error, setError] = useState();
 
   const auctionDetailsMutation = useMutation({
@@ -70,6 +75,7 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
       const data = await res.data;
       if (data.statusCode === 200) {
         setAuctionDetails(data.auctionDetails);
+        setAuctionBidders(data.auctionDetails.bids);
         setTotalBidders(data.totalBidders);
       } else {
         setError(data.statusMessage);
@@ -80,8 +86,18 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
 
   useEffect(() => {
     auctionDetailsMutation.mutate(auctionId);
+    socket?.on(`auction:${auctionId}:update_bids`, (data) => {
+      const newBidders = [...auctionBidders!];
+      newBidders[0] = JSON.parse(data);
+      setAuctionBidders(newBidders);
+      setTotalBidders(totalBidders + 1);
+    });
+
+    () => {
+      socket?.off(`auction:${auctionId}:update_bids`);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [socket]);
 
   if (error && error === 'No auction found with the provided id!') {
     return (
@@ -131,11 +147,11 @@ export default function AuctionDetails({ auctionId }: { auctionId: string }) {
             auctionStatus={auctionDetails?.auctionStatus as string}
             buyPrice={auctionDetails?.buyPrice as string}
             title={auctionDetails?.title as string}
-            highestBid={Number(auctionDetails?.bids[0]?.amount)}
+            highestBid={Number(auctionBidders[0]?.amount)}
           />
           <AuctionBiddersSection
             isLoading={auctionDetailsMutation.isPending || !auctionDetails}
-            bids={auctionDetails?.bids as AuctionDetailsProps['bids']}
+            bids={auctionBidders as AuctionDetailsProps['bids']}
           />
         </div>
       </div>

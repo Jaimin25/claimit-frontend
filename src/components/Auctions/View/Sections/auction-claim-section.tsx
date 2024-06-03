@@ -7,6 +7,7 @@ import { FaClock, FaWallet } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
 import { toast } from 'sonner';
 
+import { useSocket } from '@/components/Providers/socket-provider';
 import { useUser } from '@/components/Providers/user-provider';
 import AuctionClaimSkeletonSkele from '@/components/Skeletons/AuctionDetailsSkeletons/auction-claim-section-skele';
 import { Button } from '@/components/ui/button';
@@ -61,7 +62,8 @@ export default function AuctionClaimSection({
   title: string;
   highestBid: number;
 }) {
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, user } = useUser();
+  const { socket } = useSocket();
 
   const [endTime, setEndTime] = useState('--:--:--');
   const [bidValue, setBidValue] = useState(highestBid + 1);
@@ -78,6 +80,14 @@ export default function AuctionClaimSection({
 
       if (data.statusCode === 200) {
         toast.success(data.statusMessage, { id: toastId });
+        socket?.emit(`bid_placed`, {
+          ...data.userBid,
+          auctionId: auctionId,
+          user: {
+            username: user?.username,
+            profilePicUrl: user?.profilePicUrl,
+          },
+        });
       } else if (data.statusMessage === 'Insufficient balance in wallet!') {
         toast.error(data.statusMessage, { id: toastId });
         setBalanceDialogOpen(true);

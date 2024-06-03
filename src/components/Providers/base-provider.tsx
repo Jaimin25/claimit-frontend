@@ -1,6 +1,7 @@
 'use client';
 
 import QueryProvider from './query-provider';
+import { SocketProvider } from './socket-provider';
 import { UserProvider } from './user-provider';
 
 export default function BaseProvider({
@@ -10,7 +11,9 @@ export default function BaseProvider({
 }) {
   return (
     <QueryProvider>
-      <UserProvider>{children}</UserProvider>
+      <UserProvider>
+        <SocketProvider>{children}</SocketProvider>
+      </UserProvider>
     </QueryProvider>
   );
 }
