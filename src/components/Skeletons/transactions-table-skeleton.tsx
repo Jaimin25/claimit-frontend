@@ -19,9 +19,9 @@ export default function TransactionTableSkeleton({ rows }: { rows: number }) {
         <TableHeader>
           <TableRow>
             <TableHead>Type</TableHead>
-            <TableHead className="hidden md:block">ID</TableHead>
+            <TableHead className="hidden items-center md:flex">ID</TableHead>
             <TableHead>Amount</TableHead>
-            <TableHead className="hidden md:block">Time</TableHead>
+            <TableHead className="hidden items-center md:flex">Time</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
