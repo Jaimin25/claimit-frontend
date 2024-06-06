@@ -41,6 +41,16 @@ const placeUserBid = async ({
   );
 };
 
+const buyAuctionItem = async ({ auctionId }: { auctionId: string }) => {
+  return await axios.post(
+    `${Config.APP_URL}/api/user/buyAuctionItem`,
+    { auctionId },
+    {
+      withCredentials: true,
+    }
+  );
+};
+
 export default function AuctionClaimSection({
   isLoading,
   auctionId,
@@ -68,6 +78,7 @@ export default function AuctionClaimSection({
   const [endTime, setEndTime] = useState('--:--:--');
   const [bidValue, setBidValue] = useState(highestBid + 1);
   const [bidDialogOpen, setBidDialogOpen] = useState(false);
+  const [buyDialogOpen, setBuyDialogOpen] = useState(false);
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false);
   const [toastId, setToastId] = useState<string | number>();
 
@@ -88,6 +99,26 @@ export default function AuctionClaimSection({
             profilePicUrl: user?.profilePicUrl,
           },
         });
+      } else if (data.statusMessage === 'Insufficient balance in wallet!') {
+        toast.error(data.statusMessage, { id: toastId });
+        setBalanceDialogOpen(true);
+      } else {
+        toast.error(data.statusMessage, { id: toastId });
+      }
+    },
+    onError: (error) =>
+      toast.error(`${error.name}: ${error.message}`, {
+        id: toastId,
+      }),
+  });
+
+  const buyAuctionItemMutation = useMutation({
+    mutationFn: buyAuctionItem,
+    onSuccess: async (res) => {
+      const data = await res.data;
+
+      if (data.statusCode === 200) {
+        toast.success(data.statusMessage, { id: toastId });
       } else if (data.statusMessage === 'Insufficient balance in wallet!') {
         toast.error(data.statusMessage, { id: toastId });
         setBalanceDialogOpen(true);
@@ -151,6 +182,13 @@ export default function AuctionClaimSection({
     setToastId(currentToastId);
   };
 
+  const onSubmitBuy = () => {
+    buyAuctionItemMutation.mutate({ auctionId });
+    setBuyDialogOpen(false);
+    const currentToastId = toast.loading('Processing, please wait...');
+    setToastId(currentToastId);
+  };
+
   if (isLoading) {
     return <AuctionClaimSkeletonSkele />;
   }
@@ -177,6 +215,7 @@ export default function AuctionClaimSection({
                 auctionStatus !== 'ACTIVE' ||
                 currentDate >= new Date(deadline).getTime()
               }
+              onClick={() => setBuyDialogOpen(true)}
             >
               Buy {auctionStatus === 'SOLD' ? '(SOLD)' : `(₹${buyPrice})`}
             </Button>
@@ -236,6 +275,13 @@ export default function AuctionClaimSection({
               )}
             </DialogDescription>
             <DialogFooter>
+              <Button
+                type="button"
+                variant={'outline'}
+                onClick={() => setBidDialogOpen(false)}
+              >
+                Cancel
+              </Button>
               {isAuthenticated ? (
                 <Button type={'submit'}>Submit</Button>
               ) : (
@@ -245,6 +291,23 @@ export default function AuctionClaimSection({
               )}
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={buyDialogOpen} onOpenChange={setBuyDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Buy {title}?</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            Are you sure you want to buy this item for{' '}
+            <span className="font-semibold">₹{buyPrice}</span>?
+          </DialogDescription>
+          <DialogFooter>
+            <Button variant={'outline'} onClick={() => setBuyDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={onSubmitBuy}>Confirm</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       <Dialog open={balanceDialogOpen} onOpenChange={setBalanceDialogOpen}>
