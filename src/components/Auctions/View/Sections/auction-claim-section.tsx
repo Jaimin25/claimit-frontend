@@ -234,7 +234,7 @@ export default function AuctionClaimSection({
                     ? 'Finished'
                     : bidders === 0
                       ? 'Start bidding!'
-                      : 'You are not alone!'}
+                      : 'Total bids'}
                 </p>
                 <div className="flex items-center gap-2">
                   <HiUsers />{' '}
