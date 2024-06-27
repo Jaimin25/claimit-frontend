@@ -214,6 +214,14 @@ export default function Wallet() {
     return (
       <Card>
         <CardContent>
+          <div className="m-2">
+            <p>
+              NOTE: Payment currently happens in test mode. Enter the below
+              details for testing purpose
+              <br />
+              Number: <i>4000003560000008</i> MM/YY: <i>1234</i> CVV: <i>123</i>
+            </p>
+          </div>
           <div className="h-full w-full" id="checkout">
             <EmbeddedCheckoutProvider
               stripe={stripePromise}
