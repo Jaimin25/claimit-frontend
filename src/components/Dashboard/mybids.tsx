@@ -109,8 +109,8 @@ export default function MyBids() {
                 <Button
                   variant={'outline'}
                   onClick={() => {
-                    setOffset(offset - 5);
-                    refreshUserBids(offset - 5);
+                    setOffset(offset - 10);
+                    refreshUserBids(offset - 10);
                   }}
                   disabled={offset === 0}
                 >
@@ -119,8 +119,8 @@ export default function MyBids() {
                 <Button
                   variant={'outline'}
                   onClick={() => {
-                    setOffset(offset + 5);
-                    refreshUserBids(offset + 5);
+                    setOffset(offset + 10);
+                    refreshUserBids(offset + 10);
                   }}
                 >
                   Next
