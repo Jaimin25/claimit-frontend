@@ -23,9 +23,9 @@ export default function Marketplace() {
   return (
     <div className="flex-1 space-y-6">
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
-        {!auctions || loading ? (
+        {loading ? (
           new Array(9).fill(0).map((_, i) => <AuctionCardsSkeleton key={i} />)
-        ) : auctions.length >= 1 ? (
+        ) : auctions && auctions.length >= 1 ? (
           auctions?.map((item, i) => <AuctionCards key={i} auction={item} />)
         ) : (
           <div>No auctions found!</div>
