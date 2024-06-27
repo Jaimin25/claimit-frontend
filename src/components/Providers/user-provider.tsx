@@ -34,6 +34,17 @@ export interface CustomerBalanceTransactionsProps {
   description: string | null;
 }
 
+export interface UserBidsProps {
+  title: string;
+  amount: string;
+  createdAt: string;
+  auction: {
+    id: string;
+    title: string;
+    auctionStatus: string;
+  };
+}
+
 type UserUpdateProps = Omit<
   UserProps,
   | 'identityVerified'
@@ -49,7 +60,9 @@ interface UserContextProps {
   userBalance: string | undefined;
   fetchUser: () => void;
   balanceTransactions: CustomerBalanceTransactionsProps[] | undefined;
+  userBids: UserBidsProps[] | undefined;
   refreshUserBalance: () => void;
+  refreshUserBids: (offset: number) => void;
   refreshUserBalanceTransactions: (value: {
     startingFrom: string;
     endingFrom: string;
@@ -63,9 +76,11 @@ const UserContext = createContext<UserContextProps>({
   isAuthenticated: false,
   userBalance: '',
   balanceTransactions: [],
+  userBids: [],
   fetchUser: () => {},
   refreshUserBalance: () => {},
   refreshUserBalanceTransactions: () => {},
+  refreshUserBids: () => {},
   signOut: () => {},
   updateUserData: () => {},
 });
@@ -99,6 +114,16 @@ const fetchUserBalanceTransactions = async (value: {
   );
 };
 
+const fetchUserBids = async (offset: number) => {
+  return await axios.post(
+    `${Config.APP_URL}/api/user/fetchUserBids`,
+    { offset },
+    {
+      withCredentials: true,
+    }
+  );
+};
+
 const fetchUserBal = async () => {
   return await axios.post(`${Config.APP_URL}/api/user/fetchUserBalance`, '', {
     withCredentials: true,
@@ -111,6 +136,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [balanceTransactions, setBalanceTransactions] =
     useState<CustomerBalanceTransactionsProps[]>();
+  const [userBids, setUserBids] = useState<UserBidsProps[]>();
 
   const mutation = useMutation({
     mutationFn: fetchUserFn,
@@ -167,6 +193,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     onError: (error) => toast.error(`${error.name}: ${error.message}`),
   });
 
+  const fetchUserBidsMutation = useMutation({
+    mutationFn: fetchUserBids,
+    onSuccess: async (res) => {
+      const data = await res.data;
+
+      if (data.statusCode === 200) {
+        setUserBids(data.userBids);
+      } else {
+        setUserBids([]);
+        toast.error(data.statusMessage);
+      }
+    },
+    onError: (error) => toast.error(`${error.name}: ${error.message}`),
+  });
+
   useEffect(() => {
     if (!user) {
       mutation.mutate();
@@ -212,6 +253,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     fetchUserBalanceTransactionsMutation.mutate(value);
   };
 
+  const refreshUserBids = (offset: number) => {
+    setUserBids(undefined);
+    fetchUserBidsMutation.mutate(offset);
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -219,7 +265,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         userBalance,
         fetchUser,
         balanceTransactions,
+        userBids,
         refreshUserBalance,
+        refreshUserBids,
         isAuthenticated,
         signOut,
         updateUserData,
