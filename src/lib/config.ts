@@ -6,7 +6,7 @@ export const Config = {
       : 'https://claimit.vercel.app',
   API_URL:
     process.env.NODE_ENV === 'development'
-      ? 'http://localhost:8000/api/v1'
+      ? 'http://claimit_backend:8000/api/v1'
       : 'https://claimit-backend.onrender.com/api/v1',
   BACKEND_URL:
     process.env.NODE_ENV === 'development'

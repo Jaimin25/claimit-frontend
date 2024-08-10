@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    container_name: claimit_frontend
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - ./src:/app/src
+    networks:
+      - claimit_network
+
+networks:
+  claimit_network:
+    name: claimit_network
+    external: true
