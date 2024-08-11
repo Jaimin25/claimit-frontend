@@ -13,8 +13,8 @@ import { Button } from '../ui/button';
 export default function Footer() {
   return (
     <footer className="border-top-gray-200 flex flex-col gap-4 border bg-white px-20 pb-4 pt-8">
-      <div className="flex justify-between">
-        <div className="flex flex-col justify-center gap-2">
+      <div className="flex flex-col justify-between md:flex-row">
+        <div className="mx-auto mb-3 flex flex-col justify-center gap-2 md:mx-0">
           <div className="items-center justify-center">
             <Link href={'/'}>
               <div className="flex items-center justify-center gap-1">
@@ -24,7 +24,7 @@ export default function Footer() {
             </Link>
           </div>
           <div className="border border-black/50" />
-          <div className="flex gap-1">
+          <div className="flex justify-center gap-1">
             <Button variant={'link'}>
               <RiInstagramLine size={24} />
             </Button>
