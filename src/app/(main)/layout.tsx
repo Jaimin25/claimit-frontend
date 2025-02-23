@@ -19,6 +19,32 @@ export const metadata = {
   icons: {
     icon: [{ url: '/icon.png', sizes: '32x32' }],
   },
+  metadataBase: new URL(Config.APP_URL),
+  openGraph: {
+    images: [
+      {
+        url: `https://i.postimg.cc/3NMw7smq/Link-Preview-Claimit.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Claimit',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@jaimin_chovatia',
+    creator: '@jaimin_chovatia',
+    title: Config.APP_NAME,
+    description: 'A marketplace to auction your items',
+    images: [
+      {
+        url: 'https://i.postimg.cc/3NMw7smq/Link-Preview-Claimit.png',
+        width: 1200,
+        height: 630,
+        alt: 'Claimit',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
