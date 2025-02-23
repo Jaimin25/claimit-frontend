@@ -24,8 +24,8 @@ const sort_by_price = [
 ];
 
 const categories = [
-  { label: 'Laptop', value: 'laptop' },
-  { label: 'Mobile', value: 'mobile' },
+  { label: 'Vase', value: 'laptop' },
+  { label: 'Stamps', value: 'mobile' },
 ] as const;
 
 export default function Sidebar() {

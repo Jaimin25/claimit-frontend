@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <div className="relative flex h-full flex-col">
       <HeroSection />
-      <div className="absolute right-0 top-0 z-50 hidden xl:block">
+      <div className="absolute right-0 top-0 hidden xl:block">
         <AnimatedListDemo />
       </div>
       <FeatureSection />

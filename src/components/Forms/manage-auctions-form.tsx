@@ -69,8 +69,8 @@ const countries = [
 ] as const;
 
 const categories = [
-  { label: 'Laptop', value: 'laptop' },
-  { label: 'Mobile', value: 'mobile' },
+  { label: 'Vase', value: 'laptop' },
+  { label: 'Stamps', value: 'mobile' },
 ] as const;
 
 const manageAuctionFormSchema = z.object({
