@@ -40,8 +40,6 @@ export default function FeatureSection() {
     mutationFn: fetchFeaturedAuctions,
     onSuccess: async (res) => {
       const data = await res.data;
-      console.log(data);
-
       if (data.statusCode === 200) {
         setFeaturedAuctions(data.featuredAuctions);
       } else {

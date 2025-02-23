@@ -16,7 +16,9 @@ const rubik = Rubik({
 export const metadata = {
   title: Config.APP_NAME,
   description: 'A marketplace to auction your items',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  icons: {
+    icon: [{ url: '/icon.png', sizes: '32x32' }],
+  },
 };
 
 export default function RootLayout({
